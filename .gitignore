@@ -1,0 +1,24 @@
+# Build
+build/
+cmake-build-*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Compiled
+*.o
+*.a
+*.so
+*.dylib
+
+# Kiro (local dev tooling)
+.kiro/
+
+# Local docs/notes
+docs/
+roadmap.md
