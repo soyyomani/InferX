@@ -1,4 +1,5 @@
 #include <inferx/tensor/shape.h>
+#include <inferx/tensor/tracer.h>
 
 #include <algorithm>
 #include <numeric>
@@ -36,6 +37,26 @@ Shape::Shape(span<const int64_t> dims) {
     rank_ = static_cast<uint8_t>(dims.size());
     for (size_t i = 0; i < dims.size(); ++i) {
         dims_[i] = dims[i];
+    }
+
+    auto& tracer = Tracer::instance();
+    if (tracer.is_enabled()) {
+        string dim_str;
+        for (size_t i = 0; i < rank_; ++i) {
+            if (i > 0) dim_str += ", ";
+            dim_str += to_string(dims_[i]);
+        }
+
+        vector<string> details;
+        details.push_back("rank = " + to_string(rank_) + " (max 8) ok");
+        for (size_t i = 0; i < rank_; ++i) {
+            details.push_back("  dims_[" + to_string(i) + "] = " + to_string(dims_[i]) + " > 0 ok");
+        }
+        details.push_back("numel() = " + to_string(numel()));
+        details.push_back("storage: stack std::array<int64_t, 8> (zero heap allocs)");
+
+        tracer.record("Shape", "Shape({" + dim_str + "})",
+                      "Validate dims, compute numel = " + to_string(numel()), details);
     }
 }
 

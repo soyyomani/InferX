@@ -1,6 +1,11 @@
 # Build
 build/
 cmake-build-*/
+wasm/build/
+
+# Visualizer
+visualizer/node_modules/
+visualizer/dist/
 
 # IDE
 .vscode/
