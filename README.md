@@ -2,45 +2,105 @@
 
 A high-performance C++20 AI inference engine built from scratch, targeting Apple Silicon (ARM64) with a focus on memory efficiency, cache-friendly layouts, and SIMD-ready architecture.
 
-## Current Status
+Includes an interactive **WebAssembly visualizer** that runs the actual compiled C++ tensor engine in the browser — letting you see step-by-step how tensors are created, stored, accessed, and transformed.
 
-Building the **Tensor Engine** — the foundational module that all other components depend on.
+## Tensor Engine
 
-### Implemented
+The complete tensor engine is implemented with 113 unit tests passing.
 
-**DType System** (`include/inferx/tensor/dtype.h`)
-- `DType` enum with uint8_t underlying type: Float32, Float16, Int8, Int32, Int64, Bool
-- `DTypeTraits<D>` compile-time traits mapping each DType to its native C++ type, byte size, alignment, and name
-- `TensorScalar` concept constraining valid tensor element types
-- `NativeToDType<T>` reverse mapping from C++ type to DType enum value
-- `dtype_size()` / `dtype_name()` constexpr runtime lookup functions
+**DType System** (`dtype.h`)
+- Compile-time type traits mapping DType enum to native C++ types, sizes, alignment
+- `TensorScalar` concept constraining valid element types
+- Bidirectional type mapping (C++ type ↔ DType enum)
+- Constexpr runtime size/name lookup
 
-**Shape** (`include/inferx/tensor/shape.h`, `src/tensor/shape.cpp`)
-- Immutable dimension representation with fixed `std::array<int64_t, 8>` storage (zero heap allocations)
-- Max rank 8, covers all practical ML tensor dimensions
-- Validation: rejects zero/negative dimensions and rank > 8
-- `numel()` total element count, `is_scalar()` for rank-0
-- `squeeze(dim)` removes a size-1 dimension
-- `unsqueeze(dim)` inserts a size-1 dimension
-- `permute(order)` reorders dimensions
-- `broadcast(a, b)` computes NumPy-style broadcast output shape
-- All operations return new Shape instances (immutable design)
+**Shape** (`shape.h`, `shape.cpp`)
+- Immutable, stack-allocated `std::array<int64_t, 8>` (zero heap allocations, max rank 8)
+- Validation, numel computation, squeeze/unsqueeze/permute
+- NumPy-style broadcast compatibility checking
 
-### Tests
+**Stride** (`stride.h`, `stride.cpp`)
+- Row-major and column-major stride computation
+- Multi-dimensional index → flat offset calculation
+- Contiguity detection
 
-- 10 DType tests — traits, concept validation, runtime/compile-time consistency
-- 45 Shape tests — construction, validation, operations, broadcasting, comparison, iteration
+**TensorStorage** (`storage.h`, `storage.cpp`)
+- 16-byte aligned allocation (ARM NEON ready)
+- RAII ownership, move-only semantics
+- Zero-initialization, size validation
 
-All passing on Apple Clang 15 with C++20.
+**Tensor** (`tensor.h`)
+- Template class `Tensor<DType>` with shared storage via `shared_ptr`
+- Named constructors: `zeros()`, `ones()`, `full()`
+- Type-safe variadic element access with debug bounds checking
+- Zero-copy operations: `reshape`, `slice`, `transpose`
+- `contiguous()` for making non-contiguous tensors SIMD-friendly
+- `clone()` for deep independent copies
+
+**TensorView** (`tensor_view.h`)
+- Non-owning read-only view (no refcount overhead)
+- Implicit conversion from Tensor
+- Slicing support
+
+**BroadcastEngine** (`broadcast.h`, `broadcast.cpp`)
+- NumPy-style broadcasting with virtual strides (stride=0 for broadcast dims)
+- Reports incompatible dimensions with descriptive errors
+
+**TensorIterator** (`iterator.h`)
+- Dual-path iteration: pointer increment for contiguous, carry-propagation for strided
+- Satisfies `std::forward_iterator` concept
+
+## WASM Visualizer
+
+The entire C++ tensor engine is compiled to WebAssembly via Emscripten. A React frontend renders the step-by-step trace output — the frontend has zero computation logic; everything runs in compiled C++.
+
+Features:
+- Interactive tensor builder: define shape, dtype, fill mode, chain operations
+- Step-by-step pipeline view showing DType → Shape → Stride → Storage → Tensor
+- 3D tensor grid (Three.js) with animated stride walk-through
+- Real-world examples: RGB image, sentence embedding, weight matrix, batch of vectors
+- Preset examples: create, access, reshape, slice, transpose, broadcast, iterate, clone
+
+```bash
+# Run the visualizer
+cd visualizer && npm install && npm run dev
+# Opens at http://localhost:5173/
+```
 
 ## Build
 
 ```bash
+# C++ build + tests
 cmake -B build -S . -DINFERX_BUILD_TESTS=ON
 cmake --build build
+
+# Run all tests (113 total)
 ./build/tests/tensor/test_dtype
 ./build/tests/tensor/test_shape
+./build/tests/tensor/test_stride
+./build/tests/tensor/test_storage
+./build/tests/tensor/test_tensor
+./build/tests/tensor/test_broadcast
+./build/tests/tensor/test_iterator
+
+# WASM build (requires Emscripten)
+source ~/emsdk/emsdk_env.sh
+cd wasm && emcmake cmake -B build -S . && cmake --build build
+cp build/inferx_wasm.{js,wasm} ../visualizer/public/
 ```
+
+## Tests
+
+| Component | Tests |
+|-----------|-------|
+| DType | 10 |
+| Shape | 45 |
+| Stride | 14 |
+| TensorStorage | 10 |
+| Tensor | 20 |
+| BroadcastEngine | 9 |
+| TensorIterator | 5 |
+| **Total** | **113** |
 
 ## Tech Stack
 
@@ -48,10 +108,11 @@ cmake --build build
 |-----------|-----------|
 | Language | C++20 |
 | Build | CMake 3.20+ |
-| Compiler | Apple Clang |
+| Compiler | Apple Clang 15 |
 | Testing | GoogleTest 1.14 |
-| Benchmarks | Google Benchmark 1.8 |
-| SIMD | ARM NEON (planned) |
+| SIMD | ARM NEON (16-byte aligned storage) |
+| WASM | Emscripten 6.0 + embind |
+| Visualizer | React 19 + Three.js + Vite |
 | Platform | macOS ARM64 |
 
 ## Project Structure
@@ -60,26 +121,46 @@ cmake --build build
 InferX/
 ├── CMakeLists.txt
 ├── include/inferx/tensor/
-│   ├── tensor_fwd.h      # Forward declarations
+│   ├── tensor_fwd.h       # Forward declarations
 │   ├── dtype.h            # Type system
-│   └── shape.h            # Shape class
+│   ├── shape.h            # Shape class
+│   ├── stride.h           # Stride class
+│   ├── storage.h          # Aligned memory storage
+│   ├── tensor.h           # Tensor template class
+│   ├── tensor_view.h      # Non-owning view
+│   ├── broadcast.h        # BroadcastEngine
+│   ├── iterator.h         # TensorIterator
+│   └── tracer.h           # Instrumentation for visualizer
 ├── src/tensor/
-│   ├── shape.cpp          # Shape implementation
-│   ├── stride.cpp         # (placeholder)
-│   ├── storage.cpp        # (placeholder)
-│   └── broadcast.cpp      # (placeholder)
+│   ├── shape.cpp
+│   ├── stride.cpp
+│   ├── storage.cpp
+│   └── broadcast.cpp
 ├── tests/tensor/
 │   ├── test_dtype.cpp
-│   └── test_shape.cpp
+│   ├── test_shape.cpp
+│   ├── test_stride.cpp
+│   ├── test_storage.cpp
+│   ├── test_tensor.cpp
+│   ├── test_broadcast.cpp
+│   └── test_iterator.cpp
+├── wasm/
+│   ├── CMakeLists.txt     # Emscripten build
+│   └── bindings.cpp       # embind bindings
+├── visualizer/
+│   ├── src/
+│   │   ├── components/    # React UI components
+│   │   └── engine/wasm.js # WASM loader
+│   └── public/
+│       ├── inferx_wasm.js
+│       └── inferx_wasm.wasm
 └── benchmarks/tensor/
     └── CMakeLists.txt
 ```
 
 ## Roadmap
 
-Next up: Stride computation, TensorStorage (aligned memory), Tensor class, TensorView, BroadcastEngine, TensorIterator.
-
-See `roadmap.md` for the full plan.
+Next: Computational graph, operator kernels (Add, MatMul, ReLU), ARM NEON SIMD backend, thread pool scheduler, ONNX model loading.
 
 ## License
 
