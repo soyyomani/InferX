@@ -1,0 +1,147 @@
+/* ═══ Math Explorer ═══ */
+.math-explorer { max-width: 960px; margin: 0 auto; }
+
+/* Operation Grid */
+.op-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.op-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.op-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.op-card.active { box-shadow: var(--shadow-glow); }
+.op-accent.active { border-color: var(--accent); }
+.op-purple.active { border-color: var(--purple); }
+.op-success.active { border-color: var(--success); }
+.op-orange.active { border-color: var(--orange); }
+.op-cyan.active { border-color: var(--cyan); }
+.op-warning.active { border-color: var(--warning); }
+
+.op-icon {
+  font-size: 1.8rem;
+  font-weight: 700;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  border-radius: 50%;
+}
+.op-name { font-size: 0.85rem; font-weight: 600; }
+.op-desc { font-size: 0.7rem; color: var(--text-muted); }
+
+/* Input Panel */
+.op-input-panel {
+  margin-bottom: 24px;
+}
+.op-input-panel h3 {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.op-inputs { display: flex; flex-direction: column; gap: 12px; }
+.op-inputs label { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
+.op-inputs input[type="number"] {
+  width: 60px;
+  padding: 6px 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.op-param-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.op-shape-preview {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+  padding: 8px 12px;
+  background: var(--accent-glow);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+.op-presets {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.op-presets span { font-size: 0.75rem; color: var(--text-muted); }
+.op-presets button {
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.op-presets button:hover { border-color: var(--accent); color: var(--accent); }
+.op-hint { font-size: 0.78rem; color: var(--text-muted); }
+
+/* Matrix Visualization */
+.matrix-vis {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.matrix-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.matrix-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+.matrix-grid {
+  display: grid;
+  gap: 2px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+.matrix-cell {
+  width: 48px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+.matrix-op-symbol {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}

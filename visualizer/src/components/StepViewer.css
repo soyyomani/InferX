@@ -1,0 +1,146 @@
+/* ═══ Step Viewer Component ═══ */
+.step-viewer {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.sv-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+.sv-title-area { display: flex; align-items: center; gap: 12px; }
+.sv-title { font-size: 1rem; font-weight: 700; }
+.sv-step-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.sv-controls { display: flex; gap: 6px; }
+.sv-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sv-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.sv-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sv-btn-accent {
+  background: var(--accent-glow);
+  border-color: rgba(74, 144, 226, 0.3);
+  color: var(--accent);
+}
+
+/* Progress Bar */
+.sv-progress-bar {
+  height: 3px;
+  background: var(--bg-secondary);
+}
+.sv-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  transition: width 0.3s ease;
+}
+
+/* Dots */
+.sv-dots {
+  display: flex;
+  gap: 4px;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+.sv-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+.sv-dot.done { background: var(--success); border-color: var(--success); }
+.sv-dot.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  transform: scale(1.3);
+}
+
+/* Content */
+.sv-content { padding: 20px; }
+.sv-step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.sv-component-badge {
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  border-radius: 999px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sv-step-title { font-size: 1.05rem; font-weight: 600; }
+.sv-step-detail {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+/* Internal details */
+.sv-internal {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+.sv-expand-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.2s;
+}
+.sv-expand-btn:hover { color: var(--text-primary); }
+
+.sv-internal-content {
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  overflow-x: auto;
+}
+.sv-line { color: var(--text-secondary); }
+.sv-spacer { height: 8px; }
+.sv-indented { padding-left: 16px; color: var(--text-muted); }
+.sv-check { color: var(--success); }
+.sv-arrow-line { color: var(--accent); }
+
+@media (max-width: 768px) {
+  .sv-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+  .sv-controls { width: 100%; justify-content: space-between; }
+}

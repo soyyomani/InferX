@@ -1,0 +1,530 @@
+/* ═══ Tensor Page ═══ */
+.tensor-page { max-width: 1000px; margin: 0 auto; }
+.tensor-page .tp-header { text-align: center; margin-bottom: 16px; }
+.tensor-page .tp-header h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+.tensor-page .tp-icon { margin-right: 10px; }
+.tensor-page .tp-header p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* Sections */
+.ts-section { margin-bottom: 36px; }
+.ts-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+.ts-desc { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 16px; line-height: 1.6; }
+
+/* Type cards */
+.ts-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ts-type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.ts-type-card:hover { border-color: var(--accent-color, var(--accent)); transform: translateY(-2px); }
+.ts-type-card.active { border-color: var(--accent-color, var(--accent)); box-shadow: 0 0 12px rgba(74,144,226,0.15); }
+.ts-type-info { display: flex; align-items: center; gap: 6px; }
+.ts-type-name { font-size: 0.82rem; font-weight: 600; }
+.ts-type-dims { font-size: 0.65rem; color: var(--text-muted); background: var(--bg-elevated); padding: 1px 6px; border-radius: 999px; }
+.ts-type-shape { font-size: 0.72rem; color: var(--accent); }
+.ts-type-desc { font-size: 0.68rem; color: var(--text-muted); }
+
+/* Type detail */
+.ts-type-detail {
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  animation: fadeIn 0.2s ease-out;
+  margin-bottom: 8px;
+}
+.ts-detail-header { font-size: 0.88rem; margin-bottom: 8px; }
+.ts-detail-body { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.6; }
+.ts-detail-body code { background: var(--bg-elevated); padding: 1px 5px; border-radius: 3px; font-size: 0.78rem; }
+
+/* Mini visualizations */
+.ts-mini-vis { width: 50px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.ts-scalar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; font-weight: 700; }
+.ts-vector { display: flex; gap: 2px; }
+.ts-v-cell { width: 10px; height: 20px; border-radius: 2px; }
+.ts-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; }
+.ts-m-cell { width: 10px; height: 8px; border-radius: 1px; }
+.ts-cube { position: relative; width: 32px; height: 28px; }
+.ts-cube-face { position: absolute; border: 2px solid; border-radius: 3px; }
+.ts-cube-front { width: 24px; height: 20px; bottom: 0; left: 0; }
+.ts-cube-back { width: 24px; height: 20px; top: 0; right: 0; opacity: 0.4; }
+.ts-hyper { position: relative; width: 36px; height: 30px; }
+.ts-hyper-layer { position: absolute; width: 22px; height: 18px; border: 2px solid; border-radius: 3px; }
+.ts-hyper-layer:nth-child(1) { bottom: 0; left: 0; }
+.ts-hyper-layer:nth-child(2) { bottom: 4px; left: 5px; }
+.ts-hyper-layer:nth-child(3) { bottom: 8px; left: 10px; }
+
+/* AI examples table */
+.ts-examples-table { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border); }
+.ts-ex-header { display: grid; grid-template-columns: 180px 100px 1fr; gap: 8px; padding: 8px 12px; background: var(--bg-elevated); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); }
+.ts-ex-row { display: grid; grid-template-columns: 180px 100px 1fr; gap: 8px; padding: 8px 12px; background: var(--bg-card); border-top: 1px solid var(--border); font-size: 0.8rem; }
+.ts-ex-context { font-weight: 500; color: var(--text-primary); }
+.ts-ex-shape { color: var(--accent); font-size: 0.75rem; }
+.ts-ex-meaning { color: var(--text-secondary); }
+
+/* Operations grid */
+.ts-ops-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.ts-op-card { padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); }
+.ts-op-icon { display: block; font-size: 1.2rem; margin-bottom: 4px; }
+.ts-op-card strong { font-size: 0.85rem; display: block; margin-bottom: 4px; }
+.ts-op-card p { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); margin-bottom: 4px; }
+.ts-op-card small { font-size: 0.7rem; color: var(--text-muted); }
+
+/* Playground */
+.ts-playground-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.ts-playground-wrap { margin-top: 16px; padding: 16px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+
+@media (max-width: 768px) {
+  .ts-ex-header, .ts-ex-row { grid-template-columns: 1fr; gap: 2px; }
+  .ts-types-grid { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
+}
+
+
+/* ═══ Override InteractiveBuilder styles inside TensorPage ═══ */
+.ts-playground-wrap .interactive-builder {
+  background: transparent;
+  padding: 0;
+}
+.ts-playground-wrap .interactive-builder h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.ts-playground-wrap .pipeline-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+/* Quick start presets */
+.ts-playground-wrap .examples-section {
+  margin-bottom: 16px;
+}
+.ts-playground-wrap .examples-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+.ts-playground-wrap .preset-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.ts-playground-wrap .preset-selector button {
+  font-size: 0.72rem;
+  padding: 5px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ts-playground-wrap .preset-selector button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Explanation box */
+.ts-playground-wrap .explanation-box {
+  padding: 10px 14px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(74, 144, 226, 0.2);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+/* Builder inputs */
+.ts-playground-wrap .builder-inputs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.ts-playground-wrap .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ts-playground-wrap .input-group label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.ts-playground-wrap .input-group input,
+.ts-playground-wrap .input-group select {
+  padding: 8px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  min-width: 100px;
+  transition: border-color 0.2s;
+}
+.ts-playground-wrap .input-group input:focus,
+.ts-playground-wrap .input-group select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Operation builder */
+.ts-playground-wrap .op-builder {
+  margin-bottom: 16px;
+}
+.ts-playground-wrap .op-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ts-playground-wrap .op-add-row select,
+.ts-playground-wrap .op-add-row input {
+  padding: 8px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.82rem;
+}
+.ts-playground-wrap .add-btn {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ts-playground-wrap .add-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* Operation queue */
+.ts-playground-wrap .op-queue {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.ts-playground-wrap .queue-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.ts-playground-wrap .queued-op {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+.ts-playground-wrap .remove-btn {
+  background: none;
+  border: none;
+  color: var(--error);
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0 2px;
+}
+
+/* Run button */
+.ts-playground-wrap .run-section {
+  margin-bottom: 20px;
+}
+.ts-playground-wrap .run-btn {
+  padding: 10px 24px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ts-playground-wrap .run-btn:hover:not(:disabled) {
+  background: #2bc48a;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+}
+.ts-playground-wrap .run-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Step viewer */
+.ts-playground-wrap .step-viewer {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.ts-playground-wrap .step-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.ts-playground-wrap .step-nav button {
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ts-playground-wrap .step-nav button:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.ts-playground-wrap .step-nav button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ts-playground-wrap .step-indicator {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+.ts-playground-wrap .step-component-name {
+  color: var(--accent);
+  font-weight: 500;
+}
+.ts-playground-wrap .show-all-btn {
+  background: var(--accent-glow) !important;
+  border-color: rgba(74, 144, 226, 0.3) !important;
+  color: var(--accent) !important;
+}
+
+/* Progress dots */
+.ts-playground-wrap .step-progress {
+  display: flex;
+  gap: 4px;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+}
+.ts-playground-wrap .progress-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+.ts-playground-wrap .progress-dot.done {
+  background: var(--success);
+  border-color: var(--success);
+}
+.ts-playground-wrap .progress-dot.current {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.3);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+/* Step visual */
+.ts-playground-wrap .step-visual-container {
+  padding: 16px;
+}
+.ts-playground-wrap .step-headline {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.ts-playground-wrap .step-subline {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+/* Visual cards */
+.ts-playground-wrap .visual-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.ts-playground-wrap .visual-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Pipeline done */
+.ts-playground-wrap .pipeline-done {
+  text-align: center;
+  padding: 14px;
+  background: rgba(52, 211, 153, 0.08);
+  border: 1px solid var(--success);
+  border-radius: var(--radius-md);
+  color: var(--success);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+/* Various visual sub-components */
+.ts-playground-wrap .dtype-visual-box,
+.ts-playground-wrap .shape-visual-box,
+.ts-playground-wrap .stride-visual-box,
+.ts-playground-wrap .storage-visual-box,
+.ts-playground-wrap .tensor-visual-box,
+.ts-playground-wrap .access-visual-box,
+.ts-playground-wrap .operation-visual-box {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.ts-playground-wrap .enum-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+.ts-playground-wrap .enum-val {
+  padding: 3px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+}
+.ts-playground-wrap .enum-val.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ts-playground-wrap .array-cells {
+  display: flex;
+  gap: 3px;
+  margin: 8px 0;
+}
+.ts-playground-wrap .array-cell {
+  width: 36px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 0.72rem;
+}
+.ts-playground-wrap .array-cell.filled {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ts-playground-wrap .check-item {
+  font-size: 0.75rem;
+  padding: 2px 0;
+}
+.ts-playground-wrap .check-item.ok { color: var(--success); }
+.ts-playground-wrap .check-item.fail { color: var(--error); }
+.ts-playground-wrap .check-item.result { color: var(--accent); font-weight: 600; margin-top: 4px; }
+
+.ts-playground-wrap .stride-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+}
+.ts-playground-wrap .stride-result {
+  margin: 12px 0;
+}
+.ts-playground-wrap .stride-array {
+  display: flex;
+  gap: 8px;
+}
+.ts-playground-wrap .stride-val { font-weight: 700; color: var(--accent); font-size: 1rem; }
+.ts-playground-wrap .stride-label { font-size: 0.65rem; color: var(--text-muted); }
+.ts-playground-wrap .stride-meaning { font-size: 0.65rem; color: var(--text-secondary); }
+
+.ts-playground-wrap .memory-block {
+  padding: 12px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+}
+.ts-playground-wrap .block-header { font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+.ts-playground-wrap .block-detail { font-size: 0.75rem; color: var(--text-secondary); }
+.ts-playground-wrap .alignment-visual { margin-top: 10px; }
+.ts-playground-wrap .align-badge { font-size: 0.72rem; background: rgba(52,211,153,0.1); color: var(--success); padding: 3px 8px; border-radius: 999px; }
+
+.ts-playground-wrap .zero-copy-badge,
+.ts-playground-wrap .copy-badge {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.ts-playground-wrap .zero-copy-badge {
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+}
+.ts-playground-wrap .copy-badge {
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--warning);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.ts-playground-wrap .highlight { color: var(--accent); }
+.ts-playground-wrap .highlight-green { color: var(--success); }
+.ts-playground-wrap .tensor-ready-badge {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(52, 211, 153, 0.1);
+  color: var(--success);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
