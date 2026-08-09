@@ -24,6 +24,14 @@ const OPERATIONS = [
     icon: "×",
     desc: "The fundamental operation of neural networks",
     color: "accent",
+    overview: {
+      definition: "Matrix multiplication (MatMul) takes two matrices and produces a third by computing dot products of rows and columns. It's the single most important operation in deep learning — every linear layer, attention mechanism, and embedding lookup is a MatMul.",
+      formula: "C[i][j] = Σₖ A[i][k] × B[k][j]",
+      intuition: "Think of it as 'mixing inputs with learned weights.' Each output number is a weighted combination of all inputs — the weights determine what the network has learned.",
+      usedIn: ["Every linear/dense layer", "Attention (Q×K, attn×V)", "Embedding lookup", "Convolution (im2col)"],
+      complexity: "O(M × K × N) — for [M×K] × [K×N]",
+      realWorld: "GPT-4 does ~1.8 trillion MatMul operations per token generated.",
+    },
   },
   {
     id: "softmax",
@@ -31,6 +39,14 @@ const OPERATIONS = [
     icon: "σ",
     desc: "Convert scores to probabilities",
     color: "purple",
+    overview: {
+      definition: "Softmax converts a vector of arbitrary real numbers (logits) into a probability distribution — all values become positive and sum to exactly 1.0. It amplifies differences: larger inputs get disproportionately larger probabilities.",
+      formula: "softmax(xᵢ) = e^(xᵢ - max) / Σⱼ e^(xⱼ - max)",
+      intuition: "It's like a 'winner-take-more' function. If one score is slightly higher, softmax makes it much more dominant. Subtracting max prevents numerical overflow.",
+      usedIn: ["Attention weights (Q·K → probabilities)", "Final output layer (logits → next-word probabilities)", "Classification (scores → class probabilities)"],
+      complexity: "O(n) — two passes: one for max/exp, one for normalize",
+      realWorld: "Every time ChatGPT picks a word, it runs softmax over 100K+ vocabulary scores.",
+    },
   },
   {
     id: "relu",
@@ -38,6 +54,14 @@ const OPERATIONS = [
     icon: "⌐",
     desc: "max(0, x) — the simplest activation",
     color: "success",
+    overview: {
+      definition: "ReLU (Rectified Linear Unit) is the simplest non-linear activation function: it passes positive values unchanged and replaces negatives with zero. Without non-linearity, stacking layers would be pointless (multiple linear layers = one linear layer).",
+      formula: "ReLU(x) = max(0, x)",
+      intuition: "Think of it as a gate — it lets 'excited' neurons pass through and silences the rest. This creates sparsity (many zeros) which helps the network learn distinct features.",
+      usedIn: ["Hidden layers in CNNs", "Feed-forward networks in older transformers", "Most computer vision models"],
+      complexity: "O(n) — single comparison per element",
+      realWorld: "ResNet-50 applies ReLU ~23 million times per forward pass on a single image.",
+    },
   },
   {
     id: "gelu",
@@ -45,6 +69,14 @@ const OPERATIONS = [
     icon: "≈",
     desc: "Smooth activation used in GPT/BERT",
     color: "orange",
+    overview: {
+      definition: "GELU (Gaussian Error Linear Unit) is a smooth, differentiable activation that approximates ReLU but doesn't have the hard cutoff at zero. Small negative values get slightly reduced instead of killed entirely.",
+      formula: "GELU(x) = 0.5x(1 + tanh(√(2/π)(x + 0.044715x³)))",
+      intuition: "Unlike ReLU which is binary (pass or kill), GELU is probabilistic — it weights values by 'how likely they are to be positive.' This gives smoother gradients and slightly better training dynamics.",
+      usedIn: ["GPT-2, GPT-3, GPT-4 (all feed-forward layers)", "BERT", "Most modern transformer models"],
+      complexity: "O(n) — more expensive than ReLU (requires tanh), but still element-wise",
+      realWorld: "GPT-4 uses GELU in every one of its 96 transformer layers × 2 FFN sublayers = 192 GELU applications per token.",
+    },
   },
   {
     id: "attention",
@@ -52,6 +84,14 @@ const OPERATIONS = [
     icon: "◎",
     desc: "How tokens attend to each other",
     color: "cyan",
+    overview: {
+      definition: "Self-Attention is the core innovation of transformers. Each token looks at EVERY other token and computes a relevance score, then uses those scores to create a context-aware representation. This is how 'bank' knows if it means 'river bank' or 'money bank.'",
+      formula: "Attention(Q,K,V) = softmax(Q×Kᵀ / √d_k) × V",
+      intuition: "Each word asks 'what should I pay attention to?' (Query), advertises 'what do I contain?' (Key), and offers 'here's my info' (Value). Dot product of Q and K = relevance score. High scores mean strong connection.",
+      usedIn: ["Every transformer layer (GPT, BERT, Claude)", "Cross-attention in translation", "Vision Transformers (ViT)", "Diffusion models (Stable Diffusion)"],
+      complexity: "O(n² × d) — quadratic in sequence length (why context windows are expensive)",
+      realWorld: "Claude's 200K context window means attention computes 200,000 × 200,000 = 40 billion score pairs per layer.",
+    },
   },
   {
     id: "tokenize",
@@ -59,6 +99,14 @@ const OPERATIONS = [
     icon: "✂",
     desc: "Text → number sequences",
     color: "warning",
+    overview: {
+      definition: "Tokenization is the first step in any NLP pipeline — it converts raw text into a sequence of integer IDs that the neural network can process. Each ID maps to a token (word, subword, or character) in a fixed vocabulary.",
+      formula: "\"Hello world\" → split → [\"Hello\", \"world\"] → lookup → [15496, 995]",
+      intuition: "AI can't read text directly. Tokenization is like giving each word a number name. The model then works entirely with these numbers — it never sees the actual letters.",
+      usedIn: ["Input preprocessing for all language models", "BPE (GPT), WordPiece (BERT), SentencePiece (T5)", "Code models (special tokens for syntax)"],
+      complexity: "O(n × m) — n = text length, m = max token length for BPE matching",
+      realWorld: "GPT-4's tokenizer has ~100K tokens. 'Hello' = 1 token, but 'tokenization' might be 3 tokens: 'token' + 'ization' + boundary.",
+    },
   },
 ];
 
@@ -264,10 +312,13 @@ export default function MathExplorer() {
         ))}
       </div>
 
+      {/* Overview Panel — shows educational content when card is tapped */}
+      {selectedOp && <OperationOverview op={OPERATIONS.find((o) => o.id === selectedOp)} />}
+
       {/* Input Panel */}
       {selectedOp && (
         <div className="op-input-panel card">
-          <h3>{OPERATIONS.find((o) => o.id === selectedOp)?.name}</h3>
+          <h3>Try it yourself</h3>
           {renderInputPanel()}
         </div>
       )}
@@ -311,6 +362,65 @@ function MatrixDisplay({ data, rows, cols, label }) {
             {typeof v === "number" ? v.toFixed(2) : v}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function OperationOverview({ op }) {
+  if (!op || !op.overview) return null;
+  const { overview, icon, name, color } = op;
+
+  const iconBgClass = `op-${color}`;
+
+  return (
+    <div className="op-overview">
+      <div className="op-overview-header">
+        <div className={`op-overview-icon op-icon ${iconBgClass}`} style={{ width: 40, height: 40, fontSize: '1.2rem' }}>
+          {icon}
+        </div>
+        <div>
+          <div className="op-overview-title">{name}</div>
+          <div className="op-overview-subtitle">{op.desc}</div>
+        </div>
+      </div>
+
+      <div className="op-overview-grid">
+        <div className="op-overview-item">
+          <div className="op-overview-item-label">📖 What is it?</div>
+          <div className="op-overview-item-content">{overview.definition}</div>
+        </div>
+
+        <div className="op-overview-item">
+          <div className="op-overview-item-label">📐 Formula</div>
+          <div className="op-overview-item-content">
+            <code>{overview.formula}</code>
+          </div>
+        </div>
+
+        <div className="op-overview-item">
+          <div className="op-overview-item-label">💡 Intuition</div>
+          <div className="op-overview-item-content">{overview.intuition}</div>
+        </div>
+
+        <div className="op-overview-item">
+          <div className="op-overview-item-label">🔧 Used in</div>
+          <div className="op-overview-item-content">
+            <ul>
+              {overview.usedIn.map((item, i) => <li key={i}>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <div className="op-overview-item">
+          <div className="op-overview-item-label">⚡ Complexity</div>
+          <div className="op-overview-item-content">{overview.complexity}</div>
+        </div>
+
+        <div className="op-overview-item">
+          <div className="op-overview-item-label">🌍 Real-world scale</div>
+          <div className="op-overview-item-content">{overview.realWorld}</div>
+        </div>
       </div>
     </div>
   );

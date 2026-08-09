@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Feedback Widget — Floating Chat Bubble (bottom-right)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.feedback-widget {
+  position: sticky;
+  bottom: 24px;
+  z-index: 9999;
+  font-family: var(--font-sans);
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 24px;
+  pointer-events: none;
+  margin-top: -76px;
+}
+
+.feedback-widget-inner {
+  position: relative;
+  pointer-events: all;
+}
+
+/* Toggle button */
+.feedback-toggle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(74, 144, 226, 0.3);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.feedback-toggle:hover {
+  transform: scale(1.08);
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-lg), 0 0 30px rgba(74, 144, 226, 0.5);
+}
+
+.feedback-toggle.active {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-md);
+}
+
+/* Panel */
+.feedback-panel {
+  position: absolute;
+  bottom: 60px;
+  right: 0;
+  width: 320px;
+  max-height: 480px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: feedbackSlideUp 0.25s ease-out;
+  pointer-events: all;
+}
+
+@keyframes feedbackSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.feedback-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.feedback-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.feedback-header p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Form */
+.feedback-form {
+  padding: 16px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feedback-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.feedback-field label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.feedback-field input,
+.feedback-field textarea {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.feedback-field input:focus,
+.feedback-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.feedback-field input::placeholder,
+.feedback-field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Submit */
+.feedback-submit {
+  margin-top: 4px;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.feedback-submit:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.feedback-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Error */
+.feedback-error {
+  font-size: 12px;
+  color: var(--error);
+  text-align: center;
+}
+
+/* Success */
+.feedback-success {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.feedback-success p {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .feedback-widget {
+    bottom: 16px;
+    padding-right: 16px;
+  }
+
+  .feedback-panel {
+    width: calc(100vw - 32px);
+    right: 0;
+  }
+}

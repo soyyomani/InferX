@@ -4,6 +4,8 @@ import ImagePipeline from "./components/ImagePipeline";
 import MathExplorer from "./components/MathExplorer";
 import TensorPage from "./components/TensorPage";
 import Landing from "./components/Landing";
+import Footer from "./components/Footer";
+import FeedbackWidget from "./components/FeedbackWidget";
 import { IconBolt, IconChat, IconImage, IconSigma, IconGrid, IconHome } from "./components/Icons";
 import { initNNWasm, isNNReady } from "./engine/nn_wasm";
 import "./App.css";
@@ -65,9 +67,8 @@ export default function App() {
         {page === "tensor" && <TensorPage />}
       </main>
 
-      <footer className="app-footer">
-        <p>InferX — C++20 AI Inference Engine | Math runs in real compiled C++ via WebAssembly</p>
-      </footer>
+      <FeedbackWidget />
+      <Footer />
     </div>
   );
 }
