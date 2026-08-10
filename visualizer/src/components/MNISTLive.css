@@ -1,0 +1,335 @@
+.mnist-live {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.mnist-header {
+  margin-bottom: 2.5rem;
+}
+
+.mnist-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: #e2e8f0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mnist-header p {
+  color: #94a3b8;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.mnist-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+}
+
+/* ─── Drawing Section ─────────────────────────────────────── */
+.mnist-draw-section {
+  grid-row: 1 / 3;
+}
+
+.draw-label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.canvas-container {
+  border: 2px solid #334155;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.draw-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+}
+
+.btn-clear {
+  padding: 0.5rem 1.2rem;
+  background: #334155;
+  color: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.btn-clear:hover {
+  background: #475569;
+}
+
+.draw-hint {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* ─── Results Section ─────────────────────────────────────── */
+.mnist-results-section {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #334155;
+}
+
+.prediction-hero {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.predicted-digit {
+  font-size: 5rem;
+  font-weight: 700;
+  color: #4ade80;
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(74, 222, 128, 0.3);
+}
+
+.confidence-label {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin-top: 0.25rem;
+}
+
+.prob-bars {
+  margin-top: 1rem;
+}
+
+.prob-bars-title {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.prob-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  transition: transform 0.2s;
+}
+
+.prob-row.winner {
+  transform: scale(1.02);
+}
+
+.prob-label {
+  width: 1.2rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  text-align: center;
+  font-weight: 600;
+}
+
+.prob-row.winner .prob-label {
+  color: #4ade80;
+}
+
+.prob-bar-bg {
+  flex: 1;
+  height: 16px;
+  background: #0f172a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prob-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.prob-row.winner .prob-bar-fill {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+
+.prob-value {
+  width: 3.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-align: right;
+  font-family: monospace;
+}
+
+.prob-row.winner .prob-value {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* No prediction state */
+.no-prediction {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.no-pred-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.no-prediction p {
+  margin: 0.25rem 0;
+}
+
+.no-pred-sub {
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+/* ─── Pipeline Section ────────────────────────────────────── */
+.mnist-pipeline-section {
+  grid-column: 1 / -1;
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #334155;
+}
+
+.pipeline-title {
+  font-size: 0.85rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.pipe-stage {
+  padding: 0.6rem 1rem;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.pipe-stage.active {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.05);
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.1);
+}
+
+.pipe-stage-label {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.pipe-stage-sub {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 0.15rem;
+}
+
+.pipe-arrow {
+  color: #475569;
+  font-size: 1.2rem;
+}
+
+/* Activation Heatmap */
+.activation-section {
+  margin-top: 1rem;
+}
+
+.activation-title {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.activation-grid {
+  display: grid;
+  grid-template-columns: repeat(32, 1fr);
+  gap: 1px;
+}
+
+.activation-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  transition: opacity 0.3s;
+}
+
+/* Engine Info Cards */
+.engine-info {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.info-card {
+  background: #0f172a;
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+  border: 1px solid #1e293b;
+}
+
+.info-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.info-value {
+  display: block;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mnist-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mnist-draw-section {
+    grid-row: auto;
+  }
+
+  .engine-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pipeline-flow {
+    gap: 0.3rem;
+  }
+}

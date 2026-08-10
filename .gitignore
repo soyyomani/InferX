@@ -1,5 +1,6 @@
 # Build
 build/
+build-*/
 cmake-build-*/
 wasm/build/
 
@@ -27,3 +28,9 @@ visualizer/dist/
 # Local docs/notes
 docs/
 roadmap.md
+
+# Generated model files (regenerate with scripts/)
+models/
+
+# MNIST dataset downloads
+data/

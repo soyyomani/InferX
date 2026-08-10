@@ -21,6 +21,7 @@ add_compile_options(
 # ─── Options ─────────────────────────────────────────────────────────────────
 option(INFERX_BUILD_TESTS "Build unit tests" ON)
 option(INFERX_BUILD_BENCHMARKS "Build benchmarks" OFF)
+option(INFERX_BUILD_EXAMPLES "Build examples" ON)
 
 # ─── Library ─────────────────────────────────────────────────────────────────
 add_subdirectory(src/tensor)
@@ -29,9 +30,21 @@ add_subdirectory(src/tensor)
 if(INFERX_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests/tensor)
+    add_subdirectory(tests/kernels)
+    add_subdirectory(tests/memory)
+    add_subdirectory(tests/graph)
+    add_subdirectory(tests/quantize)
+    add_subdirectory(tests/parallel)
 endif()
 
 # ─── Benchmarks ──────────────────────────────────────────────────────────────
 if(INFERX_BUILD_BENCHMARKS)
     add_subdirectory(benchmarks/tensor)
+    add_subdirectory(benchmarks/kernels)
+    add_subdirectory(benchmarks/memory)
+endif()
+
+# ─── Examples ─────────────────────────────────────────────────────────────────
+if(INFERX_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()

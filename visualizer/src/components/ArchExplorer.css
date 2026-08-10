@@ -1,0 +1,316 @@
+.arch {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.arch-header {
+  margin-bottom: 2.5rem;
+}
+
+.arch-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: #e2e8f0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.arch-header p {
+  color: #94a3b8;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
+/* ─── Module Grid ─────────────────────────────────────────── */
+.arch-diagram {
+  margin-bottom: 2rem;
+}
+
+.arch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.arch-module {
+  background: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 1.2rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.arch-module:hover {
+  border-color: var(--mod-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.arch-module.selected {
+  border-color: var(--mod-color);
+  background: color-mix(in srgb, var(--mod-color) 8%, #1e293b);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--mod-color) 20%, transparent);
+}
+
+.mod-icon {
+  font-size: 1.5rem;
+}
+
+.mod-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.mod-summary {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* ─── Data Flow ───────────────────────────────────────────── */
+.arch-flow {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+
+.flow-title {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.flow-connections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 0.5rem;
+}
+
+.flow-conn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+  font-size: 0.8rem;
+}
+
+.flow-conn:hover, .flow-conn.highlight {
+  background: #1e293b;
+}
+
+.conn-from, .conn-to {
+  padding: 0.15rem 0.5rem;
+  background: #334155;
+  border-radius: 4px;
+  color: #e2e8f0;
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.conn-arrow {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.conn-label {
+  color: #64748b;
+  font-size: 0.7rem;
+  margin-left: auto;
+}
+
+/* ─── Detail Panel ────────────────────────────────────────── */
+.arch-detail {
+  background: #1e293b;
+  border: 2px solid var(--mod-color);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  animation: detail-in 0.3s ease;
+}
+
+@keyframes detail-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #334155;
+}
+
+.detail-icon {
+  font-size: 2.5rem;
+}
+
+.detail-header h2 {
+  color: #e2e8f0;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.detail-header p {
+  color: #94a3b8;
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.detail-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.detail-section {
+  min-width: 0;
+}
+
+.detail-section:last-child {
+  grid-column: 1 / -1;
+}
+
+.detail-section h3 {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.detail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-list li {
+  padding: 0.4rem 0;
+  padding-left: 1.2rem;
+  position: relative;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.detail-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--mod-color);
+}
+
+.detail-code {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: #a5f3fc;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.detail-metrics {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metric-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.75rem 1.2rem;
+  text-align: center;
+  min-width: 100px;
+}
+
+.metric-label {
+  display: block;
+  font-size: 0.7rem;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.metric-value {
+  display: block;
+  font-size: 1.2rem;
+  color: var(--mod-color);
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+/* ─── Legend / Stats ──────────────────────────────────────── */
+.arch-legend {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.legend-title {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.legend-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.legend-stat {
+  text-align: center;
+}
+
+.ls-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.ls-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .arch-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-body {
+    grid-template-columns: 1fr;
+  }
+
+  .legend-stats {
+    gap: 1rem;
+  }
+}

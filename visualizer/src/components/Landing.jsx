@@ -1,162 +1,107 @@
 import "./Landing.css";
 
-const FEATURES = [
-  {
-    id: "text",
-    icon: "💬",
-    title: "Text AI Pipeline",
-    desc: "Type a prompt and watch AI process it — tokenization, embeddings, attention, prediction. Every math step visualized.",
-    tags: ["Tokenizer", "Attention", "Softmax"],
-    color: "accent",
-  },
-  {
-    id: "image",
-    icon: "🖼",
-    title: "Vision AI Pipeline",
-    desc: "Upload an image and see how neural networks extract features — convolutions, pooling, classification. Real pixel math.",
-    tags: ["Convolution", "Pooling", "Classification"],
-    color: "purple",
-  },
-  {
-    id: "math",
-    icon: "∑",
-    title: "Math Lab",
-    desc: "Explore individual operations interactively — matrix multiply, softmax, ReLU, GELU. See every calculation step by step.",
-    tags: ["MatMul", "Softmax", "ReLU", "GELU"],
-    color: "orange",
-  },
-  {
-    id: "tensor",
-    icon: "▦",
-    title: "Tensor Playground",
-    desc: "Build tensors from scratch, apply operations, and watch memory layout in 3D. Powered by real C++ compiled to WebAssembly.",
-    tags: ["Shape", "Stride", "WASM", "3D"],
-    color: "cyan",
-  },
-];
-
-const MATH_CONCEPTS = [
-  { name: "Tokenization", desc: "How text becomes numbers" },
-  { name: "Embeddings", desc: "How numbers become meaning" },
-  { name: "Attention", desc: "How words understand context" },
-  { name: "Matrix Multiply", desc: "The core computation" },
-  { name: "Softmax", desc: "How scores become probabilities" },
-  { name: "Backpropagation", desc: "How networks learn (coming soon)" },
-];
-
 export default function Landing({ onNavigate }) {
   return (
-    <div className="landing">
-      {/* Hero */}
-      <section className="hero">
-        <div className="hero-badge">Open Source • C++20 • WebAssembly</div>
-        <h1 className="hero-title">
-          See How AI <span className="gradient-text">Actually Thinks</span>
-        </h1>
-        <p className="hero-subtitle">
-          When you send a prompt to ChatGPT or upload an image to a classifier,
-          what happens inside? InferX visualizes every single math operation — from raw
-          input to final prediction — powered by real C++ running in your browser.
+    <div className="home">
+      {/* ═══ Hero ═══ */}
+      <section className="home-hero">
+        <p className="home-tag">C++20 Inference Engine</p>
+        <h1>Built from first principles.</h1>
+        <p className="home-lead">
+          Tensor engine, SIMD kernels, memory allocators, graph compiler,
+          quantization, thread pool — zero external ML dependencies.
         </p>
-        <div className="hero-actions">
-          <button className="btn btn-primary btn-lg" onClick={() => onNavigate("text")}>
-            Try Text Pipeline →
-          </button>
-          <button className="btn btn-secondary btn-lg" onClick={() => onNavigate("math")}>
-            Explore Math
-          </button>
-        </div>
-        <div className="hero-stats">
-          <div className="stat">
-            <span className="stat-value">6</span>
-            <span className="stat-label">Math Operations</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">C++20</span>
-            <span className="stat-label">Backend Engine</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">WASM</span>
-            <span className="stat-label">Browser Runtime</span>
-          </div>
-          <div className="stat">
-            <span className="stat-value">Step-by-Step</span>
-            <span className="stat-label">Visualization</span>
-          </div>
+        <div className="home-cta">
+          <button onClick={() => onNavigate("arch")}>Explore the architecture</button>
+          <button className="sec" onClick={() => onNavigate("mnist")}>Try live demo</button>
         </div>
       </section>
 
-      {/* Feature Cards */}
-      <section className="features-section">
-        <h2 className="section-title">What You Can Explore</h2>
-        <p className="section-subtitle">
-          Each module shows the real math that AI uses — no hand-waving, no black boxes
-        </p>
-        <div className="features-grid">
-          {FEATURES.map((f) => (
-            <div
-              key={f.id}
-              className={`feature-card feature-${f.color}`}
-              onClick={() => onNavigate(f.id)}
-            >
-              <div className="feature-icon">{f.icon}</div>
-              <h3 className="feature-title">{f.title}</h3>
-              <p className="feature-desc">{f.desc}</p>
-              <div className="feature-tags">
-                {f.tags.map((t) => (
-                  <span key={t} className="feature-tag">{t}</span>
-                ))}
-              </div>
-              <span className="feature-arrow">→</span>
-            </div>
-          ))}
+      {/* ═══ Numbers ═══ */}
+      <section className="home-numbers">
+        <div><span>22</span>GFLOPS</div>
+        <div><span>918×</span>vs malloc</div>
+        <div><span>216+</span>tests</div>
+        <div><span>100%</span>MNIST</div>
+        <div><span>C++20</span>standard</div>
+      </section>
+
+      {/* ═══ Two Halves ═══ */}
+      <section className="home-split">
+        <div className="split-col">
+          <h2>The algorithms</h2>
+          <p className="split-desc">What AI models actually compute — visualized step by step.</p>
+          <ul className="split-list">
+            <li onClick={() => onNavigate("text")}>
+              <span className="sl-name">Text Pipeline</span>
+              <span className="sl-detail">tokenize → embed → attend → predict</span>
+            </li>
+            <li onClick={() => onNavigate("image")}>
+              <span className="sl-name">Vision Pipeline</span>
+              <span className="sl-detail">pixels → conv → pool → classify</span>
+            </li>
+            <li onClick={() => onNavigate("mnist")}>
+              <span className="sl-name">Live Inference</span>
+              <span className="sl-detail">draw a digit → real-time prediction</span>
+            </li>
+            <li onClick={() => onNavigate("math")}>
+              <span className="sl-name">Math Lab</span>
+              <span className="sl-detail">matmul, softmax, relu, attention</span>
+            </li>
+          </ul>
+        </div>
+
+        <div className="split-col">
+          <h2>The systems</h2>
+          <p className="split-desc">The C++ infrastructure that makes it fast enough to deploy.</p>
+          <ul className="split-list">
+            <li onClick={() => onNavigate("kernels")}>
+              <span className="sl-name">SIMD Kernels</span>
+              <span className="sl-detail">ARM NEON, cache tiling, 4×4 micro-kernel</span>
+            </li>
+            <li onClick={() => onNavigate("memory")}>
+              <span className="sl-name">Memory Arena</span>
+              <span className="sl-detail">bump allocator, zero-malloc inference</span>
+            </li>
+            <li onClick={() => onNavigate("graph")}>
+              <span className="sl-name">Graph Compiler</span>
+              <span className="sl-detail">topo sort, dead code elim, op fusion</span>
+            </li>
+            <li onClick={() => onNavigate("quantize")}>
+              <span className="sl-name">Quantization</span>
+              <span className="sl-detail">float32 → int8, 4× compression</span>
+            </li>
+            <li onClick={() => onNavigate("threads")}>
+              <span className="sl-name">Thread Pool</span>
+              <span className="sl-detail">task DAG, parallel_for, ~50ns dispatch</span>
+            </li>
+            <li onClick={() => onNavigate("tensor")}>
+              <span className="sl-name">Tensor Engine</span>
+              <span className="sl-detail">zero-copy reshape, broadcast, iterator</span>
+            </li>
+          </ul>
         </div>
       </section>
 
-      {/* Math Concepts */}
-      <section className="concepts-section">
-        <h2 className="section-title">The Math Behind AI</h2>
-        <p className="section-subtitle">
-          Every AI model — GPT, DALL-E, Claude — uses these core operations
+      {/* ═══ How they connect ═══ */}
+      <section className="home-connect">
+        <p className="connect-text">
+          <code>Attention(Q, K, V)</code> is an algorithm.{" "}
+          Making it run at <strong>7,485 images/sec</strong> with{" "}
+          <strong>552 bytes</strong> peak memory is systems engineering.
         </p>
-        <div className="concepts-grid">
-          {MATH_CONCEPTS.map((c) => (
-            <div key={c.name} className="concept-card">
-              <span className="concept-name">{c.name}</span>
-              <span className="concept-desc">{c.desc}</span>
-            </div>
-          ))}
-        </div>
+        <p className="connect-sub">This project is both.</p>
       </section>
 
-      {/* How It Works */}
-      <section className="how-section">
-        <h2 className="section-title">How It Works</h2>
-        <div className="how-steps">
-          <div className="how-step">
-            <div className="how-number">1</div>
-            <div className="how-content">
-              <h4>You provide input</h4>
-              <p>Type text like "Hello world" or upload an image</p>
-            </div>
-          </div>
-          <div className="how-connector" />
-          <div className="how-step">
-            <div className="how-number">2</div>
-            <div className="how-content">
-              <h4>C++ engine processes it</h4>
-              <p>Real compiled C++ runs tokenization, embeddings, attention — recording every step</p>
-            </div>
-          </div>
-          <div className="how-connector" />
-          <div className="how-step">
-            <div className="how-number">3</div>
-            <div className="how-content">
-              <h4>You see the math</h4>
-              <p>Every matrix multiply, every softmax, every attention score — visualized step by step</p>
-            </div>
-          </div>
-        </div>
+      {/* ═══ Footer line ═══ */}
+      <section className="home-footer-line">
+        <span>Open source</span>
+        <span>·</span>
+        <span>MIT license</span>
+        <span>·</span>
+        <span>No external ML deps</span>
+        <span>·</span>
+        <span>Apple Silicon optimized</span>
       </section>
     </div>
   );

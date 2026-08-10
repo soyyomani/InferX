@@ -1,0 +1,345 @@
+.graph-opt {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.graph-header {
+  margin-bottom: 2.5rem;
+}
+
+.graph-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: #e2e8f0;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.graph-header p {
+  color: #94a3b8;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+}
+
+/* ─── Graph Selector ──────────────────────────────────────── */
+.graph-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.graph-sel-btn {
+  padding: 0.5rem 1.2rem;
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.graph-sel-btn:hover {
+  border-color: #6366f1;
+  color: #e2e8f0;
+}
+
+.graph-sel-btn.active {
+  background: #6366f1;
+  color: #fff;
+  border-color: #6366f1;
+}
+
+/* ─── Controls ────────────────────────────────────────────── */
+.graph-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-optimize {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+.btn-optimize:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.btn-optimize:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-reset {
+  padding: 0.6rem 1.2rem;
+  background: #334155;
+  color: #e2e8f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.btn-reset:hover:not(:disabled) {
+  background: #475569;
+}
+
+.btn-reset:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.graph-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-left: auto;
+}
+
+/* ─── Graph SVG Canvas ────────────────────────────────────── */
+.graph-canvas-wrap {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.graph-svg {
+  width: 100%;
+  height: 500px;
+}
+
+/* Edges */
+.graph-edge {
+  stroke: #475569;
+  stroke-width: 2;
+  transition: all 0.5s;
+}
+
+.graph-edge.highlight {
+  stroke: #f59e0b;
+  stroke-width: 3;
+  stroke-dasharray: 8 4;
+  animation: dash-flow 1s linear infinite;
+}
+
+@keyframes dash-flow {
+  to { stroke-dashoffset: -12; }
+}
+
+/* Nodes */
+.graph-node {
+  fill: #1e293b;
+  stroke: #475569;
+  stroke-width: 1.5;
+  transition: all 0.5s;
+}
+
+.graph-node.type-input {
+  fill: #1a2332;
+  stroke: #3b82f6;
+}
+
+.graph-node.type-matmul {
+  fill: #1e1b3a;
+  stroke: #8b5cf6;
+}
+
+.graph-node.type-relu {
+  fill: #1a2e1f;
+  stroke: #22c55e;
+}
+
+.graph-node.type-gelu {
+  fill: #1a2e1f;
+  stroke: #10b981;
+}
+
+.graph-node.type-softmax {
+  fill: #2a1e1e;
+  stroke: #f97316;
+}
+
+.graph-node.type-fused_matmul_relu,
+.graph-node.type-fused_matmul_gelu {
+  fill: #1f1a30;
+  stroke: #a78bfa;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.4));
+}
+
+.graph-node.fused {
+  animation: fuse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes fuse-glow {
+  from { filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.3)); }
+  to { filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.6)); }
+}
+
+.graph-node.candidate {
+  stroke: #f59e0b;
+  stroke-width: 2.5;
+  stroke-dasharray: 4 2;
+  animation: candidate-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes candidate-pulse {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+.node-label {
+  fill: #e2e8f0;
+  font-size: 11px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.node-shape {
+  fill: #64748b;
+  font-size: 9px;
+  font-family: monospace;
+  pointer-events: none;
+}
+
+/* ─── Stats Cards ─────────────────────────────────────────── */
+.opt-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.opt-stat-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  color: #e2e8f0;
+  font-weight: 700;
+  margin-top: 0.25rem;
+}
+
+.stat-value.highlight {
+  color: #4ade80;
+}
+
+/* ─── Fusion Explanation ──────────────────────────────────── */
+.fusion-explain {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.fusion-explain h3 {
+  color: #e2e8f0;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fusion-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.fusion-pattern {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.fuse-from {
+  padding: 0.3rem 0.8rem;
+  background: #334155;
+  color: #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: monospace;
+}
+
+.fuse-arrow {
+  color: #64748b;
+  font-size: 1.2rem;
+}
+
+.fuse-to {
+  padding: 0.3rem 0.8rem;
+  background: rgba(167, 139, 250, 0.2);
+  color: #a78bfa;
+  border: 1px solid #a78bfa;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.fusion-benefit {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.fusion-ref {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .graph-controls {
+    flex-wrap: wrap;
+  }
+
+  .graph-desc {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .opt-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .graph-selector {
+    flex-wrap: wrap;
+  }
+}
