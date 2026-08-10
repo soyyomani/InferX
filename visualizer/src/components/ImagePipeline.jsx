@@ -100,7 +100,8 @@ export default function ImagePipeline() {
         const d = ctx.getImageData(0, 0, 28, 28);
         const gray = [];
         for (let i = 0; i < d.data.length; i += 4) {
-          gray.push((0.299 * d.data[i] + 0.587 * d.data[i+1] + 0.114 * d.data[i+2]) / 255);
+          // Invert: MNIST uses white=0 (background), black=1 (ink)
+          gray.push(1.0 - (0.299 * d.data[i] + 0.587 * d.data[i+1] + 0.114 * d.data[i+2]) / 255);
         }
         setPixels(gray);
       };
