@@ -93,10 +93,51 @@ export default function ImagePipeline() {
       setImagePreview(dataUrl);
       const img = new Image();
       img.onload = () => {
+        // Step 1: Draw original image to a temp canvas to extract pixels
+        const tmpCanvas = document.createElement("canvas");
+        tmpCanvas.width = img.width;
+        tmpCanvas.height = img.height;
+        const tmpCtx = tmpCanvas.getContext("2d");
+        tmpCtx.drawImage(img, 0, 0);
+        const tmpData = tmpCtx.getImageData(0, 0, img.width, img.height);
+
+        // Step 2: Find bounding box of the digit (non-white pixels)
+        let minX = img.width, minY = img.height, maxX = 0, maxY = 0;
+        for (let y = 0; y < img.height; y++) {
+          for (let x = 0; x < img.width; x++) {
+            const idx = (y * img.width + x) * 4;
+            const brightness = (0.299 * tmpData.data[idx] + 0.587 * tmpData.data[idx+1] + 0.114 * tmpData.data[idx+2]) / 255;
+            if (brightness < 0.85) { // dark pixel = part of digit
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+            }
+          }
+        }
+
+        // Step 3: Crop and center into 28×28 (MNIST style: digit fits ~20×20, centered with padding)
         const canvas = document.createElement("canvas");
         canvas.width = 28; canvas.height = 28;
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0, 28, 28);
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, 28, 28);
+
+        if (maxX > minX && maxY > minY) {
+          const cropW = maxX - minX + 1;
+          const cropH = maxY - minY + 1;
+          // Scale to fit within 20×20, preserving aspect ratio
+          const scale = Math.min(20 / cropW, 20 / cropH);
+          const drawW = Math.round(cropW * scale);
+          const drawH = Math.round(cropH * scale);
+          // Center in 28×28
+          const offsetX = Math.round((28 - drawW) / 2);
+          const offsetY = Math.round((28 - drawH) / 2);
+          ctx.drawImage(tmpCanvas, minX, minY, cropW, cropH, offsetX, offsetY, drawW, drawH);
+        } else {
+          ctx.drawImage(img, 0, 0, 28, 28);
+        }
+
         const d = ctx.getImageData(0, 0, 28, 28);
         const gray = [];
         for (let i = 0; i < d.data.length; i += 4) {
