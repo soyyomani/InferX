@@ -49,12 +49,36 @@ const KERNELS = {
 };
 
 const STAGES = [
-  { id: 0, label: "Pixels", sub: "Image → Numbers" },
-  { id: 1, label: "Convolution", sub: "Detect Patterns" },
-  { id: 2, label: "ReLU", sub: "Non-linearity" },
-  { id: 3, label: "Pooling", sub: "Downsample" },
-  { id: 4, label: "Flatten + FC", sub: "Classify" },
-  { id: 5, label: "Softmax", sub: "Probabilities" },
+  {
+    id: 0, label: "Pixels", sub: "Image → Numbers",
+    definition: "Convert the image into a grid of numbers (0-1) that the computer can process.",
+    advantage: "Without this, the network has nothing to work with. Raw pixels are the foundation of all computer vision.",
+  },
+  {
+    id: 1, label: "Convolution", sub: "Detect Patterns",
+    definition: "Slide a small filter (3×3) across the image to detect local patterns like edges, curves, and corners.",
+    advantage: "Lets the network find features regardless of WHERE they appear in the image. A curve is a curve whether it's top-left or bottom-right.",
+  },
+  {
+    id: 2, label: "ReLU", sub: "Non-linearity",
+    definition: "Replace all negative values with zero. Formula: output = max(0, input).",
+    advantage: "Without ReLU, stacking layers would just be one big linear function — it could only draw straight lines. ReLU lets the network learn complex, non-linear patterns.",
+  },
+  {
+    id: 3, label: "Pooling", sub: "Downsample",
+    definition: "Take the maximum value in each 2×2 region, shrinking the image by half.",
+    advantage: "Makes the network resistant to small shifts in position. A '7' shifted 2 pixels right still activates the same features. Also reduces computation by 4×.",
+  },
+  {
+    id: 4, label: "Flatten + FC", sub: "Classify",
+    definition: "Flatten all feature maps into one long vector, then multiply by a weight matrix to produce 10 scores (one per digit).",
+    advantage: "Combines all the local patterns detected by convolution into a global decision. 'I see a loop at top + a vertical stroke = probably 9'.",
+  },
+  {
+    id: 5, label: "Softmax", sub: "Probabilities",
+    definition: "Convert raw scores (logits) into probabilities that sum to 100%. Formula: exp(x_i) / sum(exp(x_j)).",
+    advantage: "Gives a confidence measure. Instead of 'it's a 3', we get 'it's 94% likely a 3, 4% likely an 8'. Critical for knowing when the model is uncertain.",
+  },
 ];
 
 // ─── Main Component ──────────────────────────────────────────────────
@@ -237,16 +261,36 @@ export default function ImagePipeline() {
         </div>
       )}
 
-      {/* Stage Panels */}
+      {/* Definition + Advantage for active step (LEFT SIDEBAR) + Stage Panel (RIGHT) */}
       <div className="vp-panel-area">
-        {activeStage === 0 && pixels && <PixelStage pixels={pixels} />}
-        {activeStage === 1 && pipelineData && <ConvStage pixels={pixels} data={pipelineData} />}
-        {activeStage === 2 && pipelineData && <ReluStage data={pipelineData} />}
-        {activeStage === 3 && pipelineData && <PoolStage data={pipelineData} />}
-        {activeStage === 4 && pipelineData && <FCStage data={pipelineData} />}
-        {activeStage === 5 && pipelineData && <SoftmaxStage data={pipelineData} />}
-        {activeStage === -1 && !pixels && <EmptyState />}
-        {activeStage === -1 && pixels && <div className="vp-ready">Image loaded! Click <strong>Run CNN Pipeline</strong> or select a step above.</div>}
+        {activeStage >= 0 && (
+          <aside className="vp-step-sidebar">
+            <div className="vp-step-info-num">Step {activeStage + 1}</div>
+            <div className="vp-step-info-title">{STAGES[activeStage].label}</div>
+            <div className="vp-step-info-sub">{STAGES[activeStage].sub}</div>
+
+            <div className="vp-step-block">
+              <span className="vp-step-tag">What it does</span>
+              <p>{STAGES[activeStage].definition}</p>
+            </div>
+
+            <div className="vp-step-block">
+              <span className="vp-step-tag advantage">Why it matters</span>
+              <p>{STAGES[activeStage].advantage}</p>
+            </div>
+          </aside>
+        )}
+
+        <div className="vp-panel-content">
+          {activeStage === 0 && pixels && <PixelStage pixels={pixels} />}
+          {activeStage === 1 && pipelineData && <ConvStage pixels={pixels} data={pipelineData} />}
+          {activeStage === 2 && pipelineData && <ReluStage data={pipelineData} />}
+          {activeStage === 3 && pipelineData && <PoolStage data={pipelineData} />}
+          {activeStage === 4 && pipelineData && <FCStage data={pipelineData} />}
+          {activeStage === 5 && pipelineData && <SoftmaxStage data={pipelineData} />}
+          {activeStage === -1 && !pixels && <EmptyState />}
+          {activeStage === -1 && pixels && <div className="vp-ready">Image loaded! Click <strong>Run CNN Pipeline</strong> or select a step above.</div>}
+        </div>
       </div>
     </div>
   );

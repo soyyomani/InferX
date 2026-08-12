@@ -27,7 +27,7 @@
 .vp-play-btn { margin-left: auto; }
 
 /* Stages */
-.vp-stages { display: flex; gap: 4px; margin-bottom: 24px; overflow-x: auto; padding: 4px 0; }
+.vp-stages { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding: 4px 0; }
 .vp-stage-btn { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-secondary); cursor: pointer; transition: all 0.2s; white-space: nowrap; font-size: 0.8rem; }
 .vp-stage-btn:hover { border-color: var(--accent); color: var(--text-primary); }
 .vp-stage-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); font-weight: 600; }
@@ -35,6 +35,85 @@
 .vp-stage-num { width: 20px; height: 20px; border-radius: 50%; background: var(--bg-elevated); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; }
 .vp-stage-btn.active .vp-stage-num { background: var(--accent); color: white; }
 .vp-stage-btn.done .vp-stage-num { background: var(--success); color: white; }
+
+/* Step Info Card (definition + advantage) */
+.vp-panel-area {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.vp-step-sidebar {
+  position: sticky;
+  top: 80px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vp-step-sidebar .vp-step-info-num {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.vp-step-sidebar .vp-step-info-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.vp-step-sidebar .vp-step-info-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: -8px;
+}
+
+.vp-step-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vp-step-tag {
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.vp-step-tag.advantage {
+  color: var(--success);
+}
+
+.vp-step-block p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.vp-panel-content {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .vp-panel-area {
+    grid-template-columns: 1fr;
+  }
+  .vp-step-sidebar {
+    position: static;
+  }
+}
 
 /* Panels */
 .vp-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; animation: fadeIn 0.3s ease-out; }

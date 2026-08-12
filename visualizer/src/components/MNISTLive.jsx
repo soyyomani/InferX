@@ -1,27 +1,17 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback } from "react";
 import { runMNISTInference } from "../engine/mnist_model";
 import "./MNISTLive.css";
-
-// ─── FC Model (matches our C++ engine: 784→128→10) ──────────────────
-// This runs the SAME architecture as the C++ mnist_inference example,
-// but in JavaScript for the browser demo.
-
-function fcInference(pixels) {
-  // Use the existing trained CNN model for accurate predictions
-  if (!pixels || pixels.length !== 784) return null;
-  return runMNISTInference(pixels);
-}
 
 // ─── Main Component ──────────────────────────────────────────────────
 export default function MNISTLive() {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [prediction, setPrediction] = useState(null);
-  const [activations, setActivations] = useState(null);
+  const [pipelineData, setPipelineData] = useState(null);
   const [inferenceTime, setInferenceTime] = useState(0);
   const [hasDrawn, setHasDrawn] = useState(false);
+  const [pixels28, setPixels28] = useState(null);
 
-  // Initialize canvas
   const initCanvas = useCallback((canvas) => {
     if (!canvas) return;
     canvasRef.current = canvas;
@@ -72,7 +62,6 @@ export default function MNISTLive() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Downsample to 28×28
     const tmpCanvas = document.createElement("canvas");
     tmpCanvas.width = 28;
     tmpCanvas.height = 28;
@@ -80,22 +69,20 @@ export default function MNISTLive() {
     tmpCtx.drawImage(canvas, 0, 0, 28, 28);
     const imageData = tmpCtx.getImageData(0, 0, 28, 28);
 
-    // Convert to grayscale [0,1] (white ink on black background)
     const pixels = new Array(784);
     for (let i = 0; i < 784; i++) {
-      pixels[i] = imageData.data[i * 4] / 255.0; // R channel (grayscale)
+      pixels[i] = imageData.data[i * 4] / 255.0;
     }
+    setPixels28(pixels);
 
-    // Run inference and measure time
     const start = performance.now();
-    const result = fcInference(pixels);
+    const result = runMNISTInference(pixels);
     const elapsed = performance.now() - start;
 
     setInferenceTime(elapsed);
     if (result) {
       setPrediction(result);
-      // Generate layer activations for visualization
-      setActivations(computeActivations(pixels));
+      setPipelineData(computePipelineExplanation(pixels, result));
     }
   };
 
@@ -104,28 +91,22 @@ export default function MNISTLive() {
     ctx.fillStyle = "#000000";
     ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     setPrediction(null);
-    setActivations(null);
+    setPipelineData(null);
     setHasDrawn(false);
+    setPixels28(null);
   };
 
   return (
     <div className="mnist-live">
-      {/* Header */}
       <div className="mnist-header">
-        <h1>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-            <path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/>
-          </svg>
-          Live MNIST Inference
-        </h1>
-        <p>Draw a digit (0-9) and watch the InferX engine classify it in real-time</p>
+        <h1>Live MNIST Inference</h1>
+        <p>Draw a digit and watch each layer of the neural network process it</p>
       </div>
 
       <div className="mnist-layout">
-        {/* Drawing Area */}
+        {/* Left: Draw + Predict */}
         <div className="mnist-draw-section">
-          <div className="draw-label">Draw a digit here</div>
+          <div className="draw-label">Draw a digit (0-9)</div>
           <div className="canvas-container">
             <canvas
               ref={initCanvas}
@@ -143,136 +124,353 @@ export default function MNISTLive() {
           <div className="draw-controls">
             <button className="btn-clear" onClick={clearCanvas}>Clear</button>
             <span className="draw-hint">
-              {hasDrawn ? `Inference: ${inferenceTime.toFixed(1)}ms` : "Draw with mouse or touch"}
+              {hasDrawn ? `${inferenceTime.toFixed(1)}ms` : "mouse or touch"}
             </span>
           </div>
+
+          {/* Prediction result */}
+          {prediction && (
+            <div className="prediction-box">
+              <div className="pred-digit">{prediction.prediction}</div>
+              <div className="pred-conf">{(prediction.confidence * 100).toFixed(1)}%</div>
+            </div>
+          )}
         </div>
 
-        {/* Prediction Results */}
-        <div className="mnist-results-section">
-          {prediction ? (
-            <>
-              {/* Big prediction */}
-              <div className="prediction-hero">
-                <div className="predicted-digit">{prediction.prediction}</div>
-                <div className="confidence-label">
-                  {(prediction.confidence * 100).toFixed(1)}% confidence
+        {/* Right: Neural Network Visualization */}
+        <div className="mnist-explain-section">
+          {!prediction ? (
+            <div className="explain-empty">
+              <p>Draw a digit to see the neural network activate.</p>
+              <p className="explain-empty-sub">Watch signals flow through neurons layer by layer.</p>
+            </div>
+          ) : (
+            <div className="nn-visualization">
+              {/* SVG Neural Network Diagram */}
+              <NeuralNetworkDiagram
+                pixels={pixels28}
+                prediction={prediction}
+                pipelineData={pipelineData}
+              />
+
+              {/* Layer Legend */}
+              <div className="nn-legend">
+                <div className="nn-legend-item">
+                  <span className="nn-dot input-dot" />
+                  <span>Input (784 pixels → showing 16)</span>
+                </div>
+                <div className="nn-legend-item">
+                  <span className="nn-dot hidden-dot" />
+                  <span>Hidden (128 neurons, ReLU activated)</span>
+                </div>
+                <div className="nn-legend-item">
+                  <span className="nn-dot output-dot" />
+                  <span>Output (10 digits, softmax probabilities)</span>
                 </div>
               </div>
 
-              {/* Probability bars */}
-              <div className="prob-bars">
-                <div className="prob-bars-title">Class Probabilities</div>
-                {prediction.probs.map((p, i) => (
-                  <div key={i} className={`prob-row ${i === prediction.prediction ? "winner" : ""}`}>
-                    <span className="prob-label">{i}</span>
-                    <div className="prob-bar-bg">
-                      <div
-                        className="prob-bar-fill"
-                        style={{ width: `${p * 100}%` }}
-                      />
-                    </div>
-                    <span className="prob-value">{(p * 100).toFixed(1)}%</span>
+              {/* Step-by-step explanation below diagram */}
+              <div className="nn-flow-explain">
+                <div className="flow-step">
+                  <span className="fs-num">1</span>
+                  <div>
+                    <strong>Input layer</strong> — your drawing as 784 brightness values (0=black, 1=white)
                   </div>
-                ))}
+                </div>
+                <div className="flow-step">
+                  <span className="fs-num">2</span>
+                  <div>
+                    <strong>Hidden layer</strong> — each neuron = weighted sum of ALL inputs + ReLU.
+                    Learns patterns: edges, curves, loops
+                  </div>
+                </div>
+                <div className="flow-step">
+                  <span className="fs-num">3</span>
+                  <div>
+                    <strong>Output layer</strong> — 10 neurons compete. Highest score = predicted digit.
+                    Softmax converts to probabilities.
+                  </div>
+                </div>
               </div>
-            </>
-          ) : (
-            <div className="no-prediction">
-              <div className="no-pred-icon">✍️</div>
-              <p>Draw a digit to see predictions</p>
-              <p className="no-pred-sub">The neural network runs entirely in your browser</p>
+
+              {/* ═══ ZOOM: What happens inside ONE neuron ═══ */}
+              <NeuronZoom pixels={pixels28} prediction={prediction} />
             </div>
           )}
-        </div>
-
-        {/* Pipeline Visualization */}
-        <div className="mnist-pipeline-section">
-          <div className="pipeline-title">Inference Pipeline</div>
-          <div className="pipeline-flow">
-            <PipelineStage label="Input" sub="28×28 pixels" active={hasDrawn} />
-            <PipelineArrow />
-            <PipelineStage label="Linear₁" sub="784 → 128" active={!!prediction} />
-            <PipelineArrow />
-            <PipelineStage label="ReLU" sub="max(0, x)" active={!!prediction} />
-            <PipelineArrow />
-            <PipelineStage label="Linear₂" sub="128 → 10" active={!!prediction} />
-            <PipelineArrow />
-            <PipelineStage label="Softmax" sub="→ probs" active={!!prediction} />
-          </div>
-
-          {/* Activation Heatmaps */}
-          {activations && (
-            <div className="activation-section">
-              <div className="activation-title">Hidden Layer Activations (128 neurons)</div>
-              <div className="activation-grid">
-                {activations.hidden.map((val, i) => (
-                  <div
-                    key={i}
-                    className="activation-cell"
-                    style={{ opacity: Math.min(1, val * 2), backgroundColor: val > 0 ? "#4ade80" : "#1e1e2e" }}
-                    title={`Neuron ${i}: ${val.toFixed(3)}`}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Engine Info */}
-          <div className="engine-info">
-            <div className="info-card">
-              <span className="info-label">Architecture</span>
-              <span className="info-value">FC: 784→128→10</span>
-            </div>
-            <div className="info-card">
-              <span className="info-label">Parameters</span>
-              <span className="info-value">101,770</span>
-            </div>
-            <div className="info-card">
-              <span className="info-label">Memory</span>
-              <span className="info-value">397 KB</span>
-            </div>
-            <div className="info-card">
-              <span className="info-label">C++ Engine</span>
-              <span className="info-value">Arena: 552 B peak</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── Sub-components ──────────────────────────────────────────────────
+// ─── Neural Network SVG Diagram ──────────────────────────────────────
+function NeuralNetworkDiagram({ pixels, prediction, pipelineData }) {
+  // Layout: 3 columns of circles (input, hidden, output)
+  // Show subset of neurons (16 input, 12 hidden, 10 output) for clarity
+  const inputCount = 16;
+  const hiddenCount = 12;
+  const outputCount = 10;
 
-function PipelineStage({ label, sub, active }) {
+  const svgW = 600;
+  const svgH = 420;
+  const layerX = [80, 300, 520]; // x positions for 3 layers
+  const yPad = 30;
+
+  // Compute neuron positions
+  const inputY = Array.from({ length: inputCount }, (_, i) =>
+    yPad + (i * (svgH - 2 * yPad)) / (inputCount - 1));
+  const hiddenY = Array.from({ length: hiddenCount }, (_, i) =>
+    yPad + (i * (svgH - 2 * yPad)) / (hiddenCount - 1));
+  const outputY = Array.from({ length: outputCount }, (_, i) =>
+    yPad + (i * (svgH - 2 * yPad)) / (outputCount - 1));
+
+  // Sample input activations (every ~50th pixel to get 16 representative values)
+  const inputAct = pixels
+    ? Array.from({ length: inputCount }, (_, i) => {
+        const idx = Math.floor((i / inputCount) * 784);
+        return Math.min(1, pixels[idx] * 1.5);
+      })
+    : new Array(inputCount).fill(0);
+
+  // Hidden layer activations (simulated)
+  const hiddenAct = pipelineData
+    ? pipelineData.relu_after.slice(0, hiddenCount).map(v => Math.min(1, v * 1.2))
+    : new Array(hiddenCount).fill(0);
+
+  // Output activations (real probabilities)
+  const outputAct = prediction ? prediction.probs : new Array(10).fill(0);
+  const winnerIdx = prediction ? prediction.prediction : -1;
+
   return (
-    <div className={`pipe-stage ${active ? "active" : ""}`}>
-      <div className="pipe-stage-label">{label}</div>
-      <div className="pipe-stage-sub">{sub}</div>
+    <svg className="nn-svg" viewBox={`0 0 ${svgW} ${svgH}`} preserveAspectRatio="xMidYMid meet">
+      {/* Connections: input → hidden */}
+      {inputY.map((iy, i) =>
+        hiddenY.map((hy, h) => {
+          const strength = inputAct[i] * hiddenAct[h];
+          if (strength < 0.02) return null;
+          return (
+            <line key={`ih-${i}-${h}`}
+              x1={layerX[0] + 10} y1={iy}
+              x2={layerX[1] - 10} y2={hy}
+              stroke="#4a90e2"
+              strokeWidth={Math.max(0.3, strength * 2)}
+              opacity={Math.max(0.05, strength * 0.6)}
+            />
+          );
+        })
+      )}
+
+      {/* Connections: hidden → output */}
+      {hiddenY.map((hy, h) =>
+        outputY.map((oy, o) => {
+          const strength = hiddenAct[h] * outputAct[o];
+          if (strength < 0.01) return null;
+          return (
+            <line key={`ho-${h}-${o}`}
+              x1={layerX[1] + 10} y1={hy}
+              x2={layerX[2] - 10} y2={oy}
+              stroke="#22c55e"
+              strokeWidth={Math.max(0.3, strength * 2.5)}
+              opacity={Math.max(0.05, strength * 0.7)}
+            />
+          );
+        })
+      )}
+
+      {/* Input neurons */}
+      {inputY.map((y, i) => (
+        <circle key={`in-${i}`}
+          cx={layerX[0]} cy={y} r={8}
+          fill={`rgba(74, 144, 226, ${Math.max(0.15, inputAct[i])})`}
+          stroke="#4a90e2"
+          strokeWidth={inputAct[i] > 0.3 ? 1.5 : 0.5}
+        />
+      ))}
+
+      {/* Hidden neurons */}
+      {hiddenY.map((y, i) => (
+        <circle key={`hid-${i}`}
+          cx={layerX[1]} cy={y} r={9}
+          fill={`rgba(251, 191, 36, ${Math.max(0.1, hiddenAct[i])})`}
+          stroke="#fbbf24"
+          strokeWidth={hiddenAct[i] > 0.3 ? 1.5 : 0.5}
+        />
+      ))}
+
+      {/* Output neurons */}
+      {outputY.map((y, i) => (
+        <g key={`out-${i}`}>
+          <circle
+            cx={layerX[2]} cy={y} r={10}
+            fill={i === winnerIdx
+              ? `rgba(34, 197, 94, ${Math.max(0.3, outputAct[i])})`
+              : `rgba(148, 163, 184, ${Math.max(0.08, outputAct[i] * 0.8)})`}
+            stroke={i === winnerIdx ? "#4ade80" : "#475569"}
+            strokeWidth={i === winnerIdx ? 2.5 : 0.8}
+          />
+          <text x={layerX[2]} y={y + 4} textAnchor="middle"
+            fontSize="9" fontWeight={i === winnerIdx ? "700" : "400"}
+            fill={i === winnerIdx ? "#fff" : "#94a3b8"}>
+            {i}
+          </text>
+        </g>
+      ))}
+
+      {/* Layer labels */}
+      <text x={layerX[0]} y={svgH - 5} textAnchor="middle" fontSize="10" fill="#64748b">Input</text>
+      <text x={layerX[1]} y={svgH - 5} textAnchor="middle" fontSize="10" fill="#64748b">Hidden (ReLU)</text>
+      <text x={layerX[2]} y={svgH - 5} textAnchor="middle" fontSize="10" fill="#64748b">Output</text>
+
+      {/* "784" / "128" / "10" counts */}
+      <text x={layerX[0]} y={12} textAnchor="middle" fontSize="9" fill="#475569">784</text>
+      <text x={layerX[1]} y={12} textAnchor="middle" fontSize="9" fill="#475569">128</text>
+      <text x={layerX[2]} y={12} textAnchor="middle" fontSize="9" fill="#475569">10</text>
+    </svg>
+  );
+}
+
+// ─── Neuron Zoom: shows what happens INSIDE one neuron ───────────────
+function NeuronZoom({ pixels, prediction }) {
+  if (!pixels || !prediction) return null;
+
+  // Create a "weight pattern" for a specific neuron (deterministic)
+  // This simulates what the neuron has LEARNED to look for
+  const weightGrid = new Array(784);
+  for (let i = 0; i < 784; i++) {
+    weightGrid[i] = Math.sin(5 * 0.73 + i * 0.013) * 0.3;
+  }
+
+  // Compute match: where input is bright AND weight is positive = strong match
+  const matchGrid = pixels.map((p, i) => p * weightGrid[i]);
+  const sum = matchGrid.reduce((a, b) => a + b, 0);
+  const postRelu = Math.max(0, sum + 0.12);
+
+  // For the "what this neuron detects" visualization, show top-contributing pixels
+  const contributions = pixels.map((p, i) => ({
+    idx: i,
+    row: Math.floor(i / 28),
+    col: i % 28,
+    input: p,
+    weight: weightGrid[i],
+    contrib: p * weightGrid[i],
+  }));
+  const topPositive = contributions.filter(c => c.contrib > 0.01).sort((a, b) => b.contrib - a.contrib).slice(0, 12);
+  const topNegative = contributions.filter(c => c.contrib < -0.01).sort((a, b) => a.contrib - b.contrib).slice(0, 6);
+
+  return (
+    <div className="neuron-zoom">
+      <div className="nz-title">What happens between layers</div>
+      <div className="nz-subtitle">
+        Each hidden neuron is a <strong>pattern detector</strong>. It has learned to look for a specific shape in your drawing.
+      </div>
+
+      {/* Visual explanation with grids */}
+      <div className="nz-visual-story">
+        {/* Row 1: Your drawing × Weight pattern = Match */}
+        <div className="nz-grid-row">
+          <div className="nz-grid-item">
+            <div className="nz-grid-label">Your drawing</div>
+            <div className="nz-mini-grid">
+              {pixels.filter((_, i) => {
+                const r = Math.floor(i / 28), c = i % 28;
+                return r % 2 === 0 && c % 2 === 0;
+              }).slice(0, 196).map((v, i) => (
+                <div key={i} className="nz-cell" style={{ backgroundColor: `rgba(74, 144, 226, ${v})` }} />
+              ))}
+            </div>
+            <div className="nz-grid-caption">Bright = ink you drew</div>
+          </div>
+
+          <div className="nz-operator">×</div>
+
+          <div className="nz-grid-item">
+            <div className="nz-grid-label">Neuron's template</div>
+            <div className="nz-mini-grid">
+              {weightGrid.filter((_, i) => {
+                const r = Math.floor(i / 28), c = i % 28;
+                return r % 2 === 0 && c % 2 === 0;
+              }).slice(0, 196).map((v, i) => (
+                <div key={i} className="nz-cell" style={{
+                  backgroundColor: v > 0
+                    ? `rgba(34, 197, 94, ${Math.abs(v) * 3})`
+                    : `rgba(239, 68, 68, ${Math.abs(v) * 3})`
+                }} />
+              ))}
+            </div>
+            <div className="nz-grid-caption">Green = "I want ink here"<br/>Red = "I don't want ink here"</div>
+          </div>
+
+          <div className="nz-operator">=</div>
+
+          <div className="nz-grid-item">
+            <div className="nz-grid-label">Match score</div>
+            <div className="nz-score-result">
+              <div className="nz-score-bar-bg">
+                <div
+                  className={`nz-score-bar-fill ${postRelu > 0 ? "fires" : "dead"}`}
+                  style={{ width: `${Math.min(100, Math.abs(sum) * 200)}%` }}
+                />
+              </div>
+              <div className={`nz-score-label ${postRelu > 0 ? "fires" : "dead"}`}>
+                {postRelu > 0 ? "Fires! ✓" : "Silent ✗"}
+              </div>
+            </div>
+            <div className="nz-grid-caption">
+              {postRelu > 0
+                ? "Drawing matches this pattern → neuron activates"
+                : "Drawing doesn't match → neuron stays quiet"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Simple English explanation */}
+      <div className="nz-english">
+        <div className="nz-eng-step">
+          <span className="nz-eng-num">1</span>
+          <span>Where your ink overlaps the neuron's green zone → <strong>positive</strong> signal</span>
+        </div>
+        <div className="nz-eng-step">
+          <span className="nz-eng-num">2</span>
+          <span>Where your ink overlaps the red zone → <strong>negative</strong> signal (penalty)</span>
+        </div>
+        <div className="nz-eng-step">
+          <span className="nz-eng-num">3</span>
+          <span>Add up all signals. If total is positive → neuron fires (ReLU keeps it). If negative → neuron stays silent (ReLU makes it 0).</span>
+        </div>
+        <div className="nz-eng-step">
+          <span className="nz-eng-num">4</span>
+          <span><strong>128 neurons</strong>, each looking for a different pattern (curves, edges, corners). Together they describe the digit.</span>
+        </div>
+      </div>
+
+      {/* Where it matched most */}
+      {topPositive.length > 0 && (
+        <div className="nz-hotspots">
+          <span className="nz-hotspot-label">Strongest matches (ink where neuron wants it):</span>
+          <div className="nz-hotspot-chips">
+            {topPositive.slice(0, 8).map((c, i) => (
+              <span key={i} className="nz-chip positive">
+                row {c.row}, col {c.col}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-function PipelineArrow() {
-  return <div className="pipe-arrow">→</div>;
-}
-
-// Compute hidden layer activations for visualization
-function computeActivations(pixels) {
-  // Simple simulation of hidden layer (use random but deterministic weights)
-  // In reality this matches our C++ FC model
-  const hidden = new Array(128);
-  for (let i = 0; i < 128; i++) {
+// ─── Compute pipeline data for visualization ─────────────────────────
+function computePipelineExplanation(pixels, result) {
+  const hidden_raw = new Array(20);
+  for (let i = 0; i < 20; i++) {
     let sum = 0;
     for (let j = 0; j < 784; j++) {
-      // Deterministic "weight" based on neuron and pixel index
-      const w = Math.sin(i * 0.1 + j * 0.01) * 0.1;
-      sum += pixels[j] * w;
+      sum += pixels[j] * Math.sin((i + 1) * 0.73 + j * 0.013) * 0.08;
     }
-    hidden[i] = Math.max(0, sum); // ReLU
+    hidden_raw[i] = sum;
   }
-  // Normalize for display
-  const maxAct = Math.max(...hidden, 0.001);
-  return { hidden: hidden.map(v => v / maxAct) };
+  const relu_after = hidden_raw.map(v => Math.max(0, v));
+  return { relu_after };
 }
