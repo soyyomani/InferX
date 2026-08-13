@@ -415,7 +415,21 @@ export default function MathExplorer() {
     } catch { return 0; }
   });
 
-  const [mode, setMode] = useState("lesson"); // "lesson" | "quiz" | "result"
+  const [mode, _setMode] = useState("lesson"); // "lesson" | "quiz" | "result"
+  const topicContentRef = useMemo(() => ({ current: null }), []);
+
+  // Scroll to top of topic content when mode changes
+  const setMode = (newMode) => {
+    _setMode(newMode);
+    // Scroll into view after React re-renders
+    setTimeout(() => {
+      if (topicContentRef.current) {
+        topicContentRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 50);
+  };
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [showSolution, setShowSolution] = useState({});
@@ -557,7 +571,7 @@ export default function MathExplorer() {
       </div>
 
       {/* ═══ Topic Content ═══ */}
-      <div className="math-topic-content">
+      <div className="math-topic-content" ref={(el) => { topicContentRef.current = el; }}>
         {/* Topic Header */}
         <div className="topic-header" style={{ borderColor: currentTopic.color }}>
           <div className="topic-icon" style={{ background: `${currentTopic.color}22`, color: currentTopic.color }}>
