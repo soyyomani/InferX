@@ -64,10 +64,11 @@ const TOKEN_COLORS = [
 ];
 
 // ─── Main Component ──────────────────────────────────────────────────
-export default function TextPipeline() {
+export default function TextPipeline({ onComplete }) {
   const [input, setInput] = useState("How I help myself to learn something");
   const [activeStage, setActiveStage] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
   const [highlightToken, setHighlightToken] = useState(-1);
   const timerRef = useRef(null);
 
@@ -110,6 +111,14 @@ export default function TextPipeline() {
   }
 
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current); }, []);
+
+  // Mark module complete when user reaches the last stage
+  useEffect(() => {
+    if (activeStage === STAGES.length - 1 && !hasCompleted) {
+      setHasCompleted(true);
+      if (onComplete) onComplete();
+    }
+  }, [activeStage, hasCompleted, onComplete]);
 
   return (
     <div className="tp">

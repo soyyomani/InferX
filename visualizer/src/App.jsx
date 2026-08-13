@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
-import { Layout, Menu, Breadcrumb, Badge, Typography } from "antd";
+import { Layout, Menu, Breadcrumb, Badge, Typography, Result, Tag } from "antd";
 import {
   HomeOutlined,
   ThunderboltOutlined,
-  MessageOutlined,
-  EyeOutlined,
-  EditOutlined,
-  FunctionOutlined,
   ApartmentOutlined,
   DashboardOutlined,
   DatabaseOutlined,
@@ -14,6 +10,7 @@ import {
   CompressOutlined,
   ClusterOutlined,
   AppstoreOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
 import TextPipeline from "./components/TextPipeline";
 import ImagePipeline from "./components/ImagePipeline";
@@ -42,34 +39,37 @@ const NAV_ITEMS = [
     label: "Home",
   },
   {
-    key: "ai",
-    icon: <MessageOutlined />,
-    label: "How AI Thinks",
-    children: [
-      { key: "text", icon: <MessageOutlined />, label: "Text Pipeline" },
-      { key: "image", icon: <EyeOutlined />, label: "Vision Pipeline" },
-      { key: "mnist", icon: <EditOutlined />, label: "Live Inference" },
-      { key: "math", icon: <FunctionOutlined />, label: "Math Lab" },
-    ],
-  },
-  {
     key: "cpp",
     icon: <ThunderboltOutlined />,
-    label: "How AI Runs Fast",
+    label: "How AI Runs Fast (Coming Soon)",
     children: [
-      { key: "arch", icon: <ApartmentOutlined />, label: "Architecture" },
-      { key: "kernels", icon: <DashboardOutlined />, label: "SIMD Kernels" },
-      { key: "memory", icon: <DatabaseOutlined />, label: "Memory Arena" },
-      { key: "graph", icon: <NodeIndexOutlined />, label: "Graph Compiler" },
-      { key: "quantize", icon: <CompressOutlined />, label: "Quantization" },
-      { key: "threads", icon: <ClusterOutlined />, label: "Thread Pool" },
-      { key: "tensor", icon: <AppstoreOutlined />, label: "Tensor Engine" },
+      { key: "arch", icon: <ApartmentOutlined />, label: "Architecture", disabled: true },
+      { key: "kernels", icon: <DashboardOutlined />, label: "SIMD Kernels", disabled: true },
+      { key: "memory", icon: <DatabaseOutlined />, label: "Memory Arena", disabled: true },
+      { key: "graph", icon: <NodeIndexOutlined />, label: "Graph Compiler", disabled: true },
+      { key: "quantize", icon: <CompressOutlined />, label: "Quantization", disabled: true },
+      { key: "threads", icon: <ClusterOutlined />, label: "Thread Pool", disabled: true },
+      { key: "tensor", icon: <AppstoreOutlined />, label: "Tensor Engine", disabled: true },
     ],
   },
 ];
 
 // Pages that are part of the guided learning path
 const GUIDED_PAGES = ["math", "text", "image", "mnist"];
+
+// Pages that are not yet available (show "Coming Soon" banner)
+const UPCOMING_PAGES = ["arch", "kernels", "memory", "graph", "quantize", "threads", "tensor"];
+
+function ComingSoon({ title }) {
+  return (
+    <Result
+      icon={<ClockCircleOutlined style={{ color: "#fbbf24" }} />}
+      title={<span>{title} <Tag color="gold">Coming Soon</Tag></span>}
+      subTitle="This module is currently under development. Check back soon for interactive deep-dives into C++ engine internals."
+      style={{ marginTop: 60 }}
+    />
+  );
+}
 
 const PAGE_LABELS = {
   home: "Home",
@@ -102,10 +102,11 @@ function getGroupForPage(pageKey) {
 export default function App() {
   const [page, setPage] = useState("home");
   const [nnReady, setNNReady] = useState(false);
-  const [visitedPages, setVisitedPages] = useState(() => {
-    // Persist progress in localStorage
+
+  // completedPages = pages the user has ACTUALLY finished (not just visited)
+  const [completedPages, setCompletedPages] = useState(() => {
     try {
-      const saved = localStorage.getItem("inferx-visited");
+      const saved = localStorage.getItem("inferx-completed");
       return saved ? JSON.parse(saved) : [];
     } catch { return []; }
   });
@@ -114,14 +115,14 @@ export default function App() {
     initNNWasm().then(() => setNNReady(true)).catch(() => setNNReady(true));
   }, []);
 
-  // Track visited pages
-  useEffect(() => {
-    if (page !== "home" && !visitedPages.includes(page)) {
-      const updated = [...visitedPages, page];
-      setVisitedPages(updated);
-      try { localStorage.setItem("inferx-visited", JSON.stringify(updated)); } catch {}
+  // Called by child components when the user finishes a module
+  const markComplete = (pageKey) => {
+    if (!completedPages.includes(pageKey)) {
+      const updated = [...completedPages, pageKey];
+      setCompletedPages(updated);
+      try { localStorage.setItem("inferx-completed", JSON.stringify(updated)); } catch {}
     }
-  }, [page]);
+  };
 
   const navigate = (key) => {
     if (key === "ai" || key === "cpp") return;
@@ -188,25 +189,20 @@ export default function App() {
 
       {/* ═══ Main Content ═══ */}
       <Content className="main-content">
-        {page === "home" && <Landing onNavigate={navigate} visitedPages={visitedPages} />}
-        {page === "arch" && <ArchExplorer />}
-        {page === "text" && <TextPipeline />}
-        {page === "image" && <ImagePipeline />}
-        {page === "mnist" && <MNISTLive />}
-        {page === "graph" && <GraphOptimizer />}
-        {page === "memory" && <MemoryViz />}
-        {page === "kernels" && <KernelViz />}
-        {page === "quantize" && <QuantizeViz />}
-        {page === "threads" && <ThreadPoolViz />}
-        {page === "math" && <MathExplorer />}
-        {page === "tensor" && <TensorPage />}
+        {page === "home" && <Landing onNavigate={navigate} visitedPages={completedPages} />}
+        {page === "text" && <TextPipeline onComplete={() => markComplete("text")} />}
+        {page === "image" && <ImagePipeline onComplete={() => markComplete("image")} />}
+        {page === "mnist" && <MNISTLive onComplete={() => markComplete("mnist")} />}
+        {page === "math" && <MathExplorer onComplete={() => markComplete("math")} />}
+        {/* "How AI Runs Fast" pages — show Coming Soon banner */}
+        {UPCOMING_PAGES.includes(page) && <ComingSoon title={PAGE_LABELS[page]} />}
       </Content>
 
       {/* ═══ Guided Track (only on learning-path pages) ═══ */}
       {isGuidedPage && (
         <GuidedTrack
           currentPage={page}
-          visitedPages={visitedPages}
+          visitedPages={completedPages}
           onNavigate={navigate}
         />
       )}

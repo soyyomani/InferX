@@ -82,11 +82,12 @@ const STAGES = [
 ];
 
 // ─── Main Component ──────────────────────────────────────────────────
-export default function ImagePipeline() {
+export default function ImagePipeline({ onComplete }) {
   const [pixels, setPixels] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [activeStage, setActiveStage] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
   const timerRef = useRef(null);
 
   // Computed pipeline data — uses REAL trained MNIST model
@@ -200,6 +201,14 @@ export default function ImagePipeline() {
       else setActiveStage(s);
     }, 2000);
   }
+
+  // Mark module as complete when user reaches the last stage
+  useEffect(() => {
+    if (activeStage === STAGES.length - 1 && !hasCompleted) {
+      setHasCompleted(true);
+      if (onComplete) onComplete();
+    }
+  }, [activeStage, hasCompleted, onComplete]);
 
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current); }, []);
 

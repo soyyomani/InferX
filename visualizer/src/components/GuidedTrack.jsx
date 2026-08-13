@@ -8,6 +8,7 @@ import {
   EyeOutlined,
   EditOutlined,
   CheckCircleOutlined,
+  ClockCircleOutlined,
   TrophyOutlined,
 } from "@ant-design/icons";
 import "./GuidedTrack.css";
@@ -38,16 +39,16 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
 
   // Steps items for antd Steps
   const stepsItems = LEARNING_PATH.map((step, idx) => {
-    const isVisited = visitedPages.includes(step.key);
+    const isCompleted = visitedPages.includes(step.key);
     const isCurrent = idx === currentIdx;
     return {
       title: step.title,
       icon: isCurrent
         ? step.icon
-        : isVisited
+        : isCompleted
           ? <CheckCircleOutlined style={{ color: "#34d399" }} />
-          : undefined,
-      status: isCurrent ? "process" : isVisited ? "finish" : "wait",
+          : <ClockCircleOutlined style={{ color: "#fbbf24" }} />,
+      status: isCurrent ? "process" : isCompleted ? "finish" : "wait",
     };
   });
 

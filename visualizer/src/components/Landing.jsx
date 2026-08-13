@@ -15,6 +15,7 @@ import {
   PlayCircleOutlined,
   ThunderboltOutlined,
   CheckCircleOutlined,
+  ClockCircleOutlined,
   ArrowRightOutlined,
   BookOutlined,
   TrophyOutlined,
@@ -180,7 +181,12 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
                 onClick={() => !isLocked && onNavigate(step.key)}
               >
                 <div className="path-card-number">
-                  {isCompleted ? <CheckCircleOutlined /> : <span>{idx + 1}</span>}
+                  {isCompleted
+                    ? <CheckCircleOutlined style={{ color: "#34d399" }} />
+                    : isLocked
+                      ? <LockOutlined style={{ color: "#64748b" }} />
+                      : <ClockCircleOutlined style={{ color: "#fbbf24" }} />
+                  }
                 </div>
                 <div className="path-card-icon">{step.icon}</div>
                 <div className="path-card-body">
@@ -190,8 +196,11 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
                 </div>
                 <div className="path-card-footer">
                   <Tag>{step.time}</Tag>
-                  {isCompleted && <Tag color="success">Completed</Tag>}
-                  {isNext && <Tag color="blue">Up Next</Tag>}
+                  {isCompleted && <Tag color="success" icon={<CheckCircleOutlined />}>Completed</Tag>}
+                  {!isCompleted && isNext && <Tag color="blue">Up Next</Tag>}
+                  {!isCompleted && !isNext && !isLocked && (
+                    <Tag color="warning" icon={<ClockCircleOutlined />}>Pending</Tag>
+                  )}
                   {isLocked && (
                     <Tooltip title={`Complete "${step.prereq}" first`}>
                       <Tag icon={<LockOutlined />}>Locked</Tag>
@@ -249,7 +258,7 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
               <Space>
                 <ThunderboltOutlined />
                 <Text strong>Advanced: How the C++ Engine Works</Text>
-                <Tag>7 deep-dives</Tag>
+                <Tag color="gold">Coming Soon</Tag>
               </Space>
             ),
             children: (
@@ -257,16 +266,15 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
                 {SYSTEMS.map(s => (
                   <Col xs={24} sm={12} md={8} key={s.key}>
                     <Card
-                      hoverable
                       size="small"
-                      onClick={() => onNavigate(s.key)}
                       className="system-card"
+                      style={{ opacity: 0.6, cursor: "not-allowed" }}
                       styles={{ body: { padding: "14px 16px" } }}
                     >
                       <Space>
-                        <span style={{ fontSize: 18, color: "#4a90e2" }}>{s.icon}</span>
+                        <span style={{ fontSize: 18, color: "#64748b" }}>{s.icon}</span>
                         <div>
-                          <Text strong>{s.title}</Text>
+                          <Text strong style={{ color: "#94a3b8" }}>{s.title}</Text>
                           <br />
                           <Text type="secondary" style={{ fontSize: 12 }}>{s.desc}</Text>
                         </div>

@@ -396,7 +396,7 @@ const TOPICS = [
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
 
-export default function MathExplorer() {
+export default function MathExplorer({ onComplete }) {
   // Track which topics are completed (stored in localStorage)
   const [completedTopics, setCompletedTopics] = useState(() => {
     try {
@@ -468,7 +468,12 @@ export default function MathExplorer() {
     const correct = currentTopic.quiz.filter((q, i) => quizAnswers[i] === q.correct).length;
     // Pass if >= 3/5 correct
     if (correct >= 3 && !completedTopics.includes(currentTopic.id)) {
-      setCompletedTopics(prev => [...prev, currentTopic.id]);
+      const updated = [...completedTopics, currentTopic.id];
+      setCompletedTopics(updated);
+      // If all topics are now completed, signal to parent
+      if (updated.length === TOPICS.length && onComplete) {
+        onComplete();
+      }
     }
     setMode("result");
   }

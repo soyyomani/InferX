@@ -3,13 +3,14 @@ import { runMNISTInference } from "../engine/mnist_model";
 import "./MNISTLive.css";
 
 // ─── Main Component ──────────────────────────────────────────────────
-export default function MNISTLive() {
+export default function MNISTLive({ onComplete }) {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [prediction, setPrediction] = useState(null);
   const [pipelineData, setPipelineData] = useState(null);
   const [inferenceTime, setInferenceTime] = useState(0);
   const [hasDrawn, setHasDrawn] = useState(false);
+  const [hasCompleted, setHasCompleted] = useState(false);
   const [pixels28, setPixels28] = useState(null);
 
   const initCanvas = useCallback((canvas) => {
@@ -83,6 +84,11 @@ export default function MNISTLive() {
     if (result) {
       setPrediction(result);
       setPipelineData(computePipelineExplanation(pixels, result));
+      // Mark module complete on first successful prediction
+      if (!hasCompleted && onComplete) {
+        setHasCompleted(true);
+        onComplete();
+      }
     }
   };
 
