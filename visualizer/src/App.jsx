@@ -1,4 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { Layout, Menu, Breadcrumb, Badge, Typography } from "antd";
+import {
+  HomeOutlined,
+  ThunderboltOutlined,
+  MessageOutlined,
+  EyeOutlined,
+  EditOutlined,
+  FunctionOutlined,
+  ApartmentOutlined,
+  DashboardOutlined,
+  DatabaseOutlined,
+  NodeIndexOutlined,
+  CompressOutlined,
+  ClusterOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 import TextPipeline from "./components/TextPipeline";
 import ImagePipeline from "./components/ImagePipeline";
 import MathExplorer from "./components/MathExplorer";
@@ -6,7 +22,7 @@ import TensorPage from "./components/TensorPage";
 import Landing from "./components/Landing";
 import Footer from "./components/Footer";
 import FeedbackWidget from "./components/FeedbackWidget";
-import { IconBolt, IconChat, IconImage, IconSigma, IconGrid, IconHome, IconPencil, IconNetwork, IconBrain, IconLayers } from "./components/Icons";
+import GuidedTrack from "./components/GuidedTrack";
 import { initNNWasm, isNNReady } from "./engine/nn_wasm";
 import MNISTLive from "./components/MNISTLive";
 import GraphOptimizer from "./components/GraphOptimizer";
@@ -17,155 +33,162 @@ import QuantizeViz from "./components/QuantizeViz";
 import ThreadPoolViz from "./components/ThreadPoolViz";
 import "./App.css";
 
-/*
- * Navigation Architecture:
- * ────────────────────────
- * Instead of 12 flat items, we group into 4 clear categories:
- *
- *   [Home]  [AI Demos ▾]  [Engine Internals ▾]  [Playground ▾]
- *
- * Each dropdown reveals 2-4 items max. User always knows WHERE they are.
- * This is the "progressive disclosure" pattern — show only what's needed.
- */
+const { Header, Content } = Layout;
 
-const NAV_GROUPS = [
+const NAV_ITEMS = [
   {
-    id: "ai",
+    key: "home",
+    icon: <HomeOutlined />,
+    label: "Home",
+  },
+  {
+    key: "ai",
+    icon: <MessageOutlined />,
     label: "How AI Thinks",
-    items: [
-      { id: "text", label: "Text Pipeline", desc: "Transformer: tokenize → attend → predict", Icon: IconChat },
-      { id: "image", label: "Vision Pipeline", desc: "CNN: convolve → pool → classify", Icon: IconImage },
-      { id: "mnist", label: "Live Inference", desc: "Draw a digit, get prediction", Icon: IconPencil },
-      { id: "math", label: "Math Lab", desc: "MatMul, Softmax, ReLU step by step", Icon: IconSigma },
+    children: [
+      { key: "text", icon: <MessageOutlined />, label: "Text Pipeline" },
+      { key: "image", icon: <EyeOutlined />, label: "Vision Pipeline" },
+      { key: "mnist", icon: <EditOutlined />, label: "Live Inference" },
+      { key: "math", icon: <FunctionOutlined />, label: "Math Lab" },
     ],
   },
   {
-    id: "cpp",
+    key: "cpp",
+    icon: <ThunderboltOutlined />,
     label: "How AI Runs Fast",
-    items: [
-      { id: "arch", label: "Architecture", desc: "Full system overview", Icon: IconLayers },
-      { id: "kernels", label: "SIMD Kernels", desc: "NEON matmul, 22 GFLOPS", Icon: IconBolt },
-      { id: "memory", label: "Memory Arena", desc: "918× faster than malloc", Icon: IconBrain },
-      { id: "graph", label: "Graph Compiler", desc: "Operator fusion passes", Icon: IconNetwork },
-      { id: "quantize", label: "Quantization", desc: "INT8: 4× compression", Icon: IconGrid },
-      { id: "threads", label: "Thread Pool", desc: "Parallel task execution", Icon: IconSigma },
-      { id: "tensor", label: "Tensor Engine", desc: "Zero-copy ops, broadcasting", Icon: IconGrid },
+    children: [
+      { key: "arch", icon: <ApartmentOutlined />, label: "Architecture" },
+      { key: "kernels", icon: <DashboardOutlined />, label: "SIMD Kernels" },
+      { key: "memory", icon: <DatabaseOutlined />, label: "Memory Arena" },
+      { key: "graph", icon: <NodeIndexOutlined />, label: "Graph Compiler" },
+      { key: "quantize", icon: <CompressOutlined />, label: "Quantization" },
+      { key: "threads", icon: <ClusterOutlined />, label: "Thread Pool" },
+      { key: "tensor", icon: <AppstoreOutlined />, label: "Tensor Engine" },
     ],
   },
 ];
 
-// Flat lookup for rendering
-const ALL_PAGES = NAV_GROUPS.flatMap(g => g.items);
+// Pages that are part of the guided learning path
+const GUIDED_PAGES = ["math", "text", "image", "mnist"];
+
+const PAGE_LABELS = {
+  home: "Home",
+  text: "Text Pipeline",
+  image: "Vision Pipeline",
+  mnist: "Live Inference",
+  math: "Math Lab",
+  arch: "Architecture",
+  kernels: "SIMD Kernels",
+  memory: "Memory Arena",
+  graph: "Graph Compiler",
+  quantize: "Quantization",
+  threads: "Thread Pool",
+  tensor: "Tensor Engine",
+};
+
+const GROUP_LABELS = {
+  ai: "How AI Thinks",
+  cpp: "How AI Runs Fast",
+};
+
+function getGroupForPage(pageKey) {
+  const aiPages = ["text", "image", "mnist", "math"];
+  const cppPages = ["arch", "kernels", "memory", "graph", "quantize", "threads", "tensor"];
+  if (aiPages.includes(pageKey)) return "ai";
+  if (cppPages.includes(pageKey)) return "cpp";
+  return null;
+}
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [nnReady, setNNReady] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const navRef = useRef(null);
+  const [visitedPages, setVisitedPages] = useState(() => {
+    // Persist progress in localStorage
+    try {
+      const saved = localStorage.getItem("inferx-visited");
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
 
   useEffect(() => {
     initNNWasm().then(() => setNNReady(true)).catch(() => setNNReady(true));
   }, []);
 
-  // Close dropdown on outside click
+  // Track visited pages
   useEffect(() => {
-    const handler = (e) => {
-      if (navRef.current && !navRef.current.contains(e.target)) {
-        setOpenDropdown(null);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+    if (page !== "home" && !visitedPages.includes(page)) {
+      const updated = [...visitedPages, page];
+      setVisitedPages(updated);
+      try { localStorage.setItem("inferx-visited", JSON.stringify(updated)); } catch {}
+    }
+  }, [page]);
 
-  const navigate = (id) => {
-    setPage(id);
-    setOpenDropdown(null);
-    setMenuOpen(false);
+  const navigate = (key) => {
+    if (key === "ai" || key === "cpp") return;
+    setPage(key);
+    // Scroll to top on page change
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Find which group the current page belongs to
-  const currentGroup = NAV_GROUPS.find(g => g.items.some(i => i.id === page));
-  const currentPage = ALL_PAGES.find(p => p.id === page);
+  const handleMenuClick = ({ key }) => navigate(key);
+
+  const currentGroup = getGroupForPage(page);
+  const isGuidedPage = GUIDED_PAGES.includes(page);
+
+  // Breadcrumb
+  const breadcrumbItems = [
+    { title: <a onClick={() => navigate("home")}>Home</a> },
+  ];
+  if (page !== "home" && currentGroup) {
+    breadcrumbItems.push({ title: GROUP_LABELS[currentGroup] });
+    breadcrumbItems.push({ title: PAGE_LABELS[page] });
+  }
+
+  const selectedKeys = page === "home" ? ["home"] : [page];
+  const openKeys = currentGroup ? [currentGroup] : [];
 
   return (
-    <div className="app">
-      {/* ═══ Top Navigation ═══ */}
-      <nav className="topnav" ref={navRef}>
+    <Layout className="app-layout">
+      {/* ═══ Header ═══ */}
+      <Header className="app-header">
         <div className="nav-brand" onClick={() => navigate("home")}>
-          <IconBolt size={22} className="brand-icon-svg" />
+          <ThunderboltOutlined className="brand-icon-svg" />
           <span className="brand-text">InferX</span>
         </div>
 
-        {/* Mobile menu toggle */}
-        <button className="mobile-menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
+        <Menu
+          mode="horizontal"
+          theme="dark"
+          items={NAV_ITEMS}
+          selectedKeys={selectedKeys}
+          defaultOpenKeys={openKeys}
+          onClick={handleMenuClick}
+          className="app-menu"
+          disabledOverflow
+        />
 
-        {/* Desktop: grouped dropdowns */}
-        <div className={`nav-groups ${menuOpen ? "open" : ""}`}>
-          {NAV_GROUPS.map((group) => (
-            <div key={group.id} className="nav-group">
-              <button
-                className={`nav-group-btn ${currentGroup?.id === group.id ? "active" : ""} ${openDropdown === group.id ? "expanded" : ""}`}
-                onClick={() => setOpenDropdown(openDropdown === group.id ? null : group.id)}
-              >
-                <span>{group.label}</span>
-                <svg className="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <polyline points="6 9 12 15 18 9"/>
-                </svg>
-              </button>
-
-              {/* Dropdown */}
-              {openDropdown === group.id && (
-                <div className="nav-dropdown">
-                  {group.items.map((item) => (
-                    <button
-                      key={item.id}
-                      className={`dropdown-item ${page === item.id ? "active" : ""}`}
-                      onClick={() => navigate(item.id)}
-                    >
-                      <span className="dropdown-icon"><item.Icon size={18} /></span>
-                      <div className="dropdown-text">
-                        <span className="dropdown-label">{item.label}</span>
-                        <span className="dropdown-desc">{item.desc}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="nav-status-area">
+          <Badge
+            status={nnReady ? "success" : "processing"}
+            text={
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                {nnReady ? "Engine Ready" : "Loading..."}
+              </Typography.Text>
+            }
+          />
         </div>
+      </Header>
 
-        {/* Status + current page indicator */}
-        <div className="nav-right">
-          {currentPage && page !== "home" && (
-            <span className="nav-current">{currentPage.label}</span>
-          )}
-          <div className="nav-status">
-            <span className={`status-dot ${nnReady ? "ready" : "loading"}`} />
-          </div>
-        </div>
-      </nav>
-
-      {/* ═══ Breadcrumb (shows context when deep in a section) ═══ */}
-      {page !== "home" && currentGroup && (
-        <div className="breadcrumb">
-          <button onClick={() => navigate("home")}>Home</button>
-          <span className="bc-sep">/</span>
-          <span className="bc-group">{currentGroup.label}</span>
-          <span className="bc-sep">/</span>
-          <span className="bc-current">{currentPage?.label}</span>
+      {/* ═══ Breadcrumb ═══ */}
+      {page !== "home" && (
+        <div className="app-breadcrumb">
+          <Breadcrumb items={breadcrumbItems} />
         </div>
       )}
 
       {/* ═══ Main Content ═══ */}
-      <main className="main-content">
-        {page === "home" && <Landing onNavigate={navigate} />}
+      <Content className="main-content">
+        {page === "home" && <Landing onNavigate={navigate} visitedPages={visitedPages} />}
         {page === "arch" && <ArchExplorer />}
         {page === "text" && <TextPipeline />}
         {page === "image" && <ImagePipeline />}
@@ -177,10 +200,19 @@ export default function App() {
         {page === "threads" && <ThreadPoolViz />}
         {page === "math" && <MathExplorer />}
         {page === "tensor" && <TensorPage />}
-      </main>
+      </Content>
+
+      {/* ═══ Guided Track (only on learning-path pages) ═══ */}
+      {isGuidedPage && (
+        <GuidedTrack
+          currentPage={page}
+          visitedPages={visitedPages}
+          onNavigate={navigate}
+        />
+      )}
 
       <FeedbackWidget />
       <Footer />
-    </div>
+    </Layout>
   );
 }

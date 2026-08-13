@@ -1,0 +1,87 @@
+/* ═══ Guided Track — Bottom navigation bar for learning path ═══ */
+
+.guided-track {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  margin-top: 48px;
+  border-top: 1px solid var(--border);
+  background: rgba(17, 24, 39, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+.guided-track-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+.guided-steps-row {
+  margin-bottom: 12px;
+}
+
+.guided-steps .ant-steps-item-title {
+  font-size: 12px !important;
+}
+
+.guided-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.guided-nav-left,
+.guided-nav-right {
+  flex: 1;
+}
+
+.guided-nav-right {
+  text-align: right;
+}
+
+.guided-nav-center {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.guided-position {
+  font-size: 12px;
+}
+
+.guided-complete-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* ═══ Mobile responsive ═══ */
+@media (max-width: 640px) {
+  .guided-steps-row {
+    display: none; /* Hide full steps on mobile, position text is enough */
+  }
+
+  .guided-nav-row {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .guided-nav-left,
+  .guided-nav-right {
+    flex: unset;
+  }
+
+  .guided-nav-center {
+    width: 100%;
+    order: -1;
+  }
+}
