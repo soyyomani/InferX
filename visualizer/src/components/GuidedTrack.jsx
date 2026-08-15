@@ -1,4 +1,4 @@
-import { Button, Steps, Typography, Space } from "antd";
+import { Button, Steps, Typography } from "antd";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
@@ -22,10 +22,6 @@ const LEARNING_PATH = [
   { key: "mnist", title: "MNIST Live", icon: <EditOutlined /> },
 ];
 
-/**
- * GuidedTrack — bottom navigation bar for the sequential learning path.
- * Shows Previous / Next and progress through the 4 modules.
- */
 export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate }) {
   const currentIdx = LEARNING_PATH.findIndex(s => s.key === currentPage);
   if (currentIdx === -1) return null;
@@ -52,17 +48,10 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
   return (
     <div className="guided-track">
       <div className="guided-track-inner">
-        {/* Progress steps */}
         <div className="guided-steps-row">
-          <Steps
-            current={currentIdx}
-            items={stepsItems}
-            size="small"
-            className="guided-steps"
-          />
+          <Steps current={currentIdx} items={stepsItems} size="small" className="guided-steps" />
         </div>
 
-        {/* Navigation buttons */}
         <div className="guided-nav-row">
           <div className="guided-nav-left">
             {prevStep ? (
@@ -70,9 +59,7 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
                 {prevStep.title}
               </Button>
             ) : (
-              <Button icon={<HomeOutlined />} onClick={() => onNavigate("home")}>
-                Home
-              </Button>
+              <Button icon={<HomeOutlined />} onClick={() => onNavigate("home")}>Home</Button>
             )}
           </div>
 
@@ -88,25 +75,17 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
                 Next: {nextStep.title} <ArrowRightOutlined />
               </Button>
             ) : isLastStep ? (
-              <Button
-                type="primary"
-                icon={<TrophyOutlined />}
-                onClick={() => onNavigate("home")}
-                style={{ background: "#34d399", borderColor: "#34d399" }}
-              >
+              <Button type="primary" icon={<TrophyOutlined />} onClick={() => onNavigate("home")} style={{ background: "#34d399", borderColor: "#34d399" }}>
                 Complete!
               </Button>
             ) : null}
           </div>
         </div>
 
-        {/* Completion celebration */}
         {completedCount === LEARNING_PATH.length && (
           <div className="guided-complete-banner">
             <TrophyOutlined style={{ fontSize: 18, color: "#fbbf24" }} />
-            <Text strong style={{ color: "#fbbf24" }}>
-              All 4 modules completed!
-            </Text>
+            <Text strong style={{ color: "#fbbf24" }}>All 4 modules completed!</Text>
             <Text type="secondary"> You understand AI from math to live inference.</Text>
           </div>
         )}

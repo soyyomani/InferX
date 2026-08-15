@@ -1,4 +1,4 @@
-import { Typography, Button, Row, Col, Space, Divider, Progress, Tag } from "antd";
+import { Typography, Button, Space, Divider, Progress } from "antd";
 import {
   FunctionOutlined,
   RobotOutlined,
@@ -10,11 +10,10 @@ import {
   ClockCircleOutlined,
   ArrowRightOutlined,
   LockOutlined,
-  TrophyOutlined,
 } from "@ant-design/icons";
 import "./Landing.css";
 
-const { Title, Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 const LEARNING_PATH = [
   {
@@ -65,7 +64,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
 
   return (
     <div className="landing">
-      {/* ═══ Hero ═══ */}
       <section className="landing-hero">
         <div className="hero-glow" />
         <div className="hero-orb hero-orb-1" />
@@ -110,7 +108,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         </div>
       </section>
 
-      {/* ═══ Learning Path — Visual Cards ═══ */}
       <section className="landing-path">
         <div className="path-header">
           <span className="path-header-num">4 modules</span>
@@ -126,31 +123,25 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
 
             return (
               <div key={step.key} className="path-card-wrapper">
-                {/* Connector arrow */}
                 {idx > 0 && <div className="path-connector"><ArrowRightOutlined /></div>}
 
                 <div
                   className={`path-card-v2 ${isCompleted ? "completed" : ""} ${isNext ? "next" : ""} ${isLocked ? "locked" : ""}`}
                   onClick={() => !isLocked && onNavigate(step.key)}
                 >
-                  {/* Top colored strip */}
                   <div className="pc-top-strip" style={{ background: isLocked ? "#374151" : step.gradient }} />
 
-                  {/* Number badge */}
                   <div className="pc-number" style={{ background: isCompleted ? "#34d399" : isLocked ? "#374151" : step.color }}>
                     {isCompleted ? <CheckCircleOutlined /> : isLocked ? <LockOutlined /> : idx + 1}
                   </div>
 
-                  {/* Icon */}
                   <div className="pc-icon" style={{ color: isLocked ? "#4b5563" : step.color }}>
                     {step.icon}
                   </div>
 
-                  {/* Text */}
                   <div className="pc-title">{step.title}</div>
                   <div className="pc-subtitle">{step.subtitle}</div>
 
-                  {/* Footer */}
                   <div className="pc-footer">
                     <span className="pc-time">{step.time}</span>
                     {isCompleted && <span className="pc-status done">Done</span>}
@@ -158,7 +149,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
                     {isLocked && <span className="pc-status locked-tag">Locked</span>}
                   </div>
 
-                  {/* CTA for next */}
                   {isNext && (
                     <button className="pc-cta" onClick={(e) => { e.stopPropagation(); onNavigate(step.key); }}>
                       Start <ArrowRightOutlined />
@@ -171,7 +161,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         </div>
       </section>
 
-      {/* ═══ Quick Stats — visual, minimal ═══ */}
       <section className="landing-stats">
         <div className="stats-row">
           <div className="stat-item"><span className="stat-value">22</span><span className="stat-label">GFLOPS</span></div>
@@ -184,7 +173,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         </div>
       </section>
 
-      {/* ═══ What's inside — 3 short pills ═══ */}
       <section className="landing-pills">
         <div className="pill-row">
           <div className="pill-card">
@@ -202,7 +190,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         </div>
       </section>
 
-      {/* ═══ Under the Hood — Tech & Reasoning ═══ */}
       <section className="landing-under-hood">
         <div className="uh-header">
           <span className="uh-header-icon">🔧</span>
@@ -213,7 +200,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         </div>
 
         <div className="uh-grid">
-          {/* Module cards */}
           <div className="uh-card">
             <div className="uh-card-header" style={{ borderColor: "#fbbf24" }}>
               <span className="uh-card-icon" style={{ color: "#fbbf24" }}>🧮</span>
@@ -259,12 +245,11 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
             <div className="uh-card-body">
               <div className="uh-fact"><span className="uh-tag real">Real</span> Trained neural network (784→128→10)</div>
               <div className="uh-fact"><span className="uh-tag real">Real</span> Live inference via C++/WASM</div>
-              <div className="uh-fact"><span className="uh-tag real">Real</span> Neuron activations visualized from actual forward pass</div>
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Neuron activations from actual forward pass</div>
             </div>
           </div>
         </div>
 
-        {/* Tech stack strip */}
         <div className="uh-stack">
           <div className="uh-stack-title">Tech Stack</div>
           <div className="uh-stack-items">
@@ -295,7 +280,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
           </div>
         </div>
 
-        {/* Why built this way */}
         <div className="uh-why">
           <div className="uh-why-title">Why build an AI engine from scratch?</div>
           <div className="uh-why-points">
@@ -315,7 +299,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         </div>
       </section>
 
-      {/* ═══ Footer ═══ */}
       <div className="landing-footer">
         <Space split={<Divider type="vertical" />} size="small" wrap>
           <Text type="secondary">Open source</Text>

@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { Layout, Breadcrumb, Badge, Typography, Result, Tag } from "antd";
-import {
-  ClockCircleOutlined,
-} from "@ant-design/icons";
+import { Layout, Breadcrumb, Badge, Typography } from "antd";
 import MathExplorer from "./components/MathExplorer";
 import TextPipeline from "./components/TextPipeline";
 import ImagePipeline from "./components/ImagePipeline";
@@ -17,7 +14,6 @@ import "./App.css";
 
 const { Header, Content } = Layout;
 
-// Sequential learning path
 const GUIDED_PAGES = ["math", "textai", "visionai", "mnist"];
 
 const PAGE_LABELS = {
@@ -25,10 +21,6 @@ const PAGE_LABELS = {
   textai: "How Text AI Works",
   visionai: "How Vision AI Works",
   mnist: "MNIST Live",
-};
-
-const GROUP_LABELS = {
-  ai: "Learn AI",
 };
 
 function getGroupForPage(pageKey) {
@@ -61,24 +53,19 @@ function AppShell() {
   };
 
   const goTo = (key) => {
-    // Enforce sequential order: can only access a page if previous is completed
     if (GUIDED_PAGES.includes(key)) {
       const idx = GUIDED_PAGES.indexOf(key);
       if (idx > 0 && !completedPages.includes(GUIDED_PAGES[idx - 1])) {
-        // Redirect to the first incomplete page
         const firstIncomplete = GUIDED_PAGES.find(p => !completedPages.includes(p)) || GUIDED_PAGES[0];
-        const path = `/${firstIncomplete}`;
-        navigate(path);
+        navigate(`/${firstIncomplete}`);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
     }
-    const path = key === "home" ? "/" : `/${key}`;
-    navigate(path);
+    navigate(key === "home" ? "/" : `/${key}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Route guard: if user lands on a locked route (e.g. via URL), redirect
   useEffect(() => {
     const page = location.pathname.replace("/", "");
     if (GUIDED_PAGES.includes(page)) {
@@ -90,29 +77,25 @@ function AppShell() {
     }
   }, [location.pathname, completedPages, navigate]);
 
-  // Determine current page from URL
   const currentPage = location.pathname.replace("/", "") || "home";
   const currentGroup = getGroupForPage(currentPage);
   const isGuidedPage = GUIDED_PAGES.includes(currentPage);
 
-  // Breadcrumb
   const breadcrumbItems = [
     { title: <a onClick={() => goTo("home")}>Home</a> },
   ];
   if (currentPage !== "home" && currentGroup) {
-    breadcrumbItems.push({ title: GROUP_LABELS[currentGroup] });
+    breadcrumbItems.push({ title: "Learn AI" });
     breadcrumbItems.push({ title: PAGE_LABELS[currentPage] });
   }
 
   return (
     <Layout className="app-layout">
-      {/* ═══ Header ═══ */}
       <Header className="app-header">
         <div className="nav-brand" onClick={() => goTo("home")}>
           <img src="/logo.svg" alt="InferX" className="brand-logo" />
           <span className="brand-text">InferX</span>
         </div>
-
         <div className="nav-status-area">
           <Badge
             status={nnReady ? "success" : "processing"}
@@ -125,14 +108,12 @@ function AppShell() {
         </div>
       </Header>
 
-      {/* ═══ Breadcrumb ═══ */}
       {currentPage !== "home" && (
         <div className="app-breadcrumb">
           <Breadcrumb items={breadcrumbItems} />
         </div>
       )}
 
-      {/* ═══ Main Content ═══ */}
       <Content className="main-content">
         <Routes>
           <Route path="/" element={<Landing onNavigate={goTo} visitedPages={completedPages} />} />
@@ -144,13 +125,8 @@ function AppShell() {
         </Routes>
       </Content>
 
-      {/* ═══ Guided Track ═══ */}
       {isGuidedPage && (
-        <GuidedTrack
-          currentPage={currentPage}
-          visitedPages={completedPages}
-          onNavigate={goTo}
-        />
+        <GuidedTrack currentPage={currentPage} visitedPages={completedPages} onNavigate={goTo} />
       )}
 
       <FeedbackWidget />
