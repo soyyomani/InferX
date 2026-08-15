@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { Layout, Breadcrumb, Badge, Typography, Result, Tag } from "antd";
 import {
-  ThunderboltOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import MathExplorer from "./components/MathExplorer";
@@ -110,7 +109,7 @@ function AppShell() {
       {/* ═══ Header ═══ */}
       <Header className="app-header">
         <div className="nav-brand" onClick={() => goTo("home")}>
-          <ThunderboltOutlined className="brand-icon-svg" />
+          <img src="/logo.svg" alt="InferX" className="brand-logo" />
           <span className="brand-text">InferX</span>
         </div>
 

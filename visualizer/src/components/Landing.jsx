@@ -319,7 +319,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
       <div className="landing-footer">
         <Space split={<Divider type="vertical" />} size="small" wrap>
           <Text type="secondary">Open source</Text>
-          <Text type="secondary">MIT license</Text>
           <Text type="secondary">Apple Silicon optimized</Text>
         </Space>
       </div>

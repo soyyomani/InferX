@@ -86,6 +86,12 @@ body {
   flex-shrink: 0;
 }
 
+.app-header .brand-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+
 .app-header .brand-icon-svg {
   font-size: 20px;
   color: var(--accent);
