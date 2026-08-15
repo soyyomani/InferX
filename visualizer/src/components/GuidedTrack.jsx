@@ -1,10 +1,10 @@
-import { Button, Steps, Space, Typography, Progress } from "antd";
+import { Button, Steps, Typography, Space } from "antd";
 import {
   ArrowLeftOutlined,
   ArrowRightOutlined,
   HomeOutlined,
-  MessageOutlined,
   FunctionOutlined,
+  RobotOutlined,
   EyeOutlined,
   EditOutlined,
   CheckCircleOutlined,
@@ -17,19 +17,17 @@ const { Text } = Typography;
 
 const LEARNING_PATH = [
   { key: "math", title: "Math Lab", icon: <FunctionOutlined /> },
-  { key: "text", title: "Text Pipeline", icon: <MessageOutlined /> },
-  { key: "image", title: "Vision Pipeline", icon: <EyeOutlined /> },
-  { key: "mnist", title: "Live Inference", icon: <EditOutlined /> },
+  { key: "textai", title: "Text AI", icon: <RobotOutlined /> },
+  { key: "visionai", title: "Vision AI", icon: <EyeOutlined /> },
+  { key: "mnist", title: "MNIST Live", icon: <EditOutlined /> },
 ];
 
 /**
- * GuidedTrack — shows at the bottom of learning path pages.
- * Provides Previous / Next navigation and current position indicator.
+ * GuidedTrack — bottom navigation bar for the sequential learning path.
+ * Shows Previous / Next and progress through the 4 modules.
  */
 export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate }) {
   const currentIdx = LEARNING_PATH.findIndex(s => s.key === currentPage);
-
-  // Not on a guided-path page — don't render
   if (currentIdx === -1) return null;
 
   const prevStep = currentIdx > 0 ? LEARNING_PATH[currentIdx - 1] : null;
@@ -37,7 +35,6 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
   const isLastStep = currentIdx === LEARNING_PATH.length - 1;
   const completedCount = LEARNING_PATH.filter(s => visitedPages.includes(s.key)).length;
 
-  // Steps items for antd Steps
   const stepsItems = LEARNING_PATH.map((step, idx) => {
     const isCompleted = visitedPages.includes(step.key);
     const isCurrent = idx === currentIdx;
@@ -69,17 +66,11 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
         <div className="guided-nav-row">
           <div className="guided-nav-left">
             {prevStep ? (
-              <Button
-                icon={<ArrowLeftOutlined />}
-                onClick={() => onNavigate(prevStep.key)}
-              >
+              <Button icon={<ArrowLeftOutlined />} onClick={() => onNavigate(prevStep.key)}>
                 {prevStep.title}
               </Button>
             ) : (
-              <Button
-                icon={<HomeOutlined />}
-                onClick={() => onNavigate("home")}
-              >
+              <Button icon={<HomeOutlined />} onClick={() => onNavigate("home")}>
                 Home
               </Button>
             )}
@@ -93,10 +84,7 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
 
           <div className="guided-nav-right">
             {nextStep ? (
-              <Button
-                type="primary"
-                onClick={() => onNavigate(nextStep.key)}
-              >
+              <Button type="primary" onClick={() => onNavigate(nextStep.key)}>
                 Next: {nextStep.title} <ArrowRightOutlined />
               </Button>
             ) : isLastStep ? (
@@ -117,9 +105,9 @@ export default function GuidedTrack({ currentPage, visitedPages = [], onNavigate
           <div className="guided-complete-banner">
             <TrophyOutlined style={{ fontSize: 18, color: "#fbbf24" }} />
             <Text strong style={{ color: "#fbbf24" }}>
-              You've explored all 4 core concepts!
+              All 4 modules completed!
             </Text>
-            <Text type="secondary"> Try the Advanced section for C++ engine internals.</Text>
+            <Text type="secondary"> You understand AI from math to live inference.</Text>
           </div>
         )}
       </div>

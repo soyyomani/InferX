@@ -245,4 +245,23 @@
   .vp-conv-layout { flex-direction: column; }
   .vp-relu-compare { flex-direction: column; }
   .vp-fc-flow { flex-direction: column; gap: 8px; }
+  .vp-stages { flex-wrap: wrap; gap: 4px; }
+  .vp-stage-btn { font-size: 11px; padding: 6px 8px; }
+  .vp-panel { padding: 16px; }
+  .vp-panel-head h2 { font-size: 1rem; }
+  .vp-pixel-grid { grid-template-columns: repeat(28, 5px) !important; }
+}
+
+@media (max-width: 480px) {
+  .vp-header h1 { font-size: 1.1rem; }
+  .vp-header p { font-size: 12px; }
+  .vp-stage-btn { font-size: 10px; padding: 4px 6px; }
+  .vp-stage-num { font-size: 10px; }
+  .vp-stage-label { font-size: 10px; }
+  .vp-panel { padding: 12px; border-radius: 10px; }
+  .vp-desc { font-size: 0.8rem; }
+  .vp-pixel-grid { grid-template-columns: repeat(28, 4px) !important; }
+  .vp-conv-grid { grid-template-columns: repeat(26, 5px) !important; }
+  .vp-upload-box { min-height: 120px; }
+  .vp-samples { flex-wrap: wrap; gap: 6px; }
 }

@@ -62,10 +62,37 @@
   border: 1px solid rgba(251, 191, 36, 0.25);
   border-radius: 8px;
   text-align: center;
+  flex-wrap: wrap;
 }
 
-/* ═══ Mobile responsive ═══ */
+/* ═══ Tablet ═══ */
+@media (max-width: 768px) {
+  .guided-track-inner {
+    padding: 12px 16px;
+  }
+
+  .guided-steps .ant-steps-item-title {
+    font-size: 11px !important;
+  }
+
+  .guided-nav-row {
+    gap: 10px;
+  }
+
+  .guided-nav-left .ant-btn,
+  .guided-nav-right .ant-btn {
+    font-size: 12px;
+    padding: 4px 10px;
+    height: auto;
+  }
+}
+
+/* ═══ Mobile ═══ */
 @media (max-width: 640px) {
+  .guided-track-inner {
+    padding: 10px 12px;
+  }
+
   .guided-steps-row {
     display: none; /* Hide full steps on mobile, position text is enough */
   }
@@ -83,5 +110,31 @@
   .guided-nav-center {
     width: 100%;
     order: -1;
+    margin-bottom: 4px;
+  }
+
+  .guided-nav-left .ant-btn,
+  .guided-nav-right .ant-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .guided-complete-banner {
+    font-size: 12px;
+    padding: 6px 12px;
+    gap: 6px;
+  }
+}
+
+/* ═══ Small Mobile ═══ */
+@media (max-width: 380px) {
+  .guided-nav-left .ant-btn,
+  .guided-nav-right .ant-btn {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .guided-position {
+    font-size: 11px;
   }
 }

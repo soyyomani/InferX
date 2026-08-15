@@ -67,6 +67,7 @@ body {
 .app-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 24px;
   height: 56px;
   line-height: 56px;
@@ -82,7 +83,6 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  margin-right: 24px;
   flex-shrink: 0;
 }
 
@@ -98,15 +98,8 @@ body {
   color: var(--text-primary);
 }
 
-.app-menu {
-  flex: 1;
-  border-bottom: none;
-  background: transparent;
-}
-
 .nav-status-area {
   flex-shrink: 0;
-  margin-left: 16px;
 }
 
 /* ═══ Breadcrumb ═══ */
@@ -122,6 +115,68 @@ body {
   margin: 0 auto;
   padding: 32px 24px;
   min-height: calc(100vh - 130px);
+}
+
+/* ═══ Responsive: Tablet ═══ */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: 24px 20px;
+  }
+}
+
+/* ═══ Responsive: Mobile ═══ */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 12px;
+    height: 48px;
+    line-height: 48px;
+    gap: 8px;
+  }
+
+  .app-header .nav-brand {
+    margin-right: 0;
+  }
+
+  .app-header .brand-text {
+    font-size: 1.1rem;
+  }
+
+  .nav-status-area {
+    margin-left: 0;
+  }
+
+  .nav-status-area .ant-badge-status-text {
+    display: none;
+  }
+
+  .app-breadcrumb {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .main-content {
+    padding: 16px 12px;
+    min-height: calc(100vh - 100px);
+  }
+}
+
+/* ═══ Responsive: Small Mobile ═══ */
+@media (max-width: 480px) {
+  .app-header {
+    padding: 0 8px;
+  }
+
+  .app-header .brand-text {
+    font-size: 1rem;
+  }
+
+  .app-menu {
+    font-size: 12px;
+  }
+
+  .main-content {
+    padding: 12px 8px;
+  }
 }
 
 /* ═══ Page Layout System ═══ */
@@ -172,8 +227,23 @@ body {
 .page-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 .page-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
 
+@media (max-width: 1024px) {
+  .page-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
-  .page-grid-2, .page-grid-3, .page-grid-4 { grid-template-columns: 1fr; }
+  .page-grid-2 { grid-template-columns: 1fr; }
+  .page-grid-3 { grid-template-columns: 1fr; }
+  .page-grid-4 { grid-template-columns: 1fr; }
+
+  .page-header h1 { font-size: 1.25rem; }
+  .page-card { padding: 1rem; border-radius: 10px; }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 { font-size: 1.1rem; }
+  .page-header p { font-size: 0.78rem; }
+  .page-card { padding: 0.75rem; }
 }
 
 .page-stat {

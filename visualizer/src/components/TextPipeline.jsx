@@ -87,6 +87,8 @@ export default function TextPipeline({ onComplete }) {
     { id: 3, label: "Self-Attention", sub: "Context Understanding" },
     { id: 4, label: "Feed-Forward", sub: "Transform Features" },
     { id: 5, label: "Output Prediction", sub: "Next Word" },
+    { id: 6, label: "Transformer Stack", sub: "Scale to LLM" },
+    { id: 7, label: "RAG", sub: "External Knowledge" },
   ];
 
   function playAll() {
@@ -197,6 +199,12 @@ export default function TextPipeline({ onComplete }) {
         )}
         {activeStage === 5 && (
           <OutputVisual input={input} predictions={predictions} />
+        )}
+        {activeStage === 6 && (
+          <TransformerStackVisual tokens={tokens} />
+        )}
+        {activeStage === 7 && (
+          <RAGVisual input={input} />
         )}
         {activeStage === -1 && (
           <div className="tp-empty-state">
@@ -1050,6 +1058,239 @@ function OutputVisual({ input, predictions }) {
         <strong>Key insight:</strong> The model predicts ONE word at a time. To generate a full response,
         it appends the predicted word and runs the ENTIRE pipeline again for the next word.
         A 100-word response = 100 complete forward passes through all 96 layers.
+      </div>
+    </div>
+  );
+}
+
+
+// ─── Stage 7: Transformer Stack / LLM Scaling ───────────────────────
+function TransformerStackVisual({ tokens }) {
+  const modelComparison = [
+    { name: "This Demo", layers: 1, params: "~50", context: "10 tokens", color: "#4a90e2" },
+    { name: "GPT-2", layers: 12, params: "124M", context: "1,024", color: "#a78bfa" },
+    { name: "Llama 3 (8B)", layers: 32, params: "8B", context: "8K", color: "#34d399" },
+    { name: "Claude 3.5", layers: 96, params: "~175B", context: "200K", color: "#fb923c" },
+    { name: "GPT-4", layers: 120, params: "~1.8T", context: "128K", color: "#f87171" },
+  ];
+
+  return (
+    <div className="tp-panel">
+      <div className="tp-panel-header">
+        <h2>🏗️ Step 7: The Transformer Stack (LLM)</h2>
+        <span className="tp-panel-badge">Scale × 96 Layers</span>
+      </div>
+      <p className="tp-panel-desc">
+        Everything you just saw (embedding → attention → feed-forward → output) is <strong>ONE transformer block</strong>.
+        ChatGPT stacks <strong>96-120 of these blocks</strong>. Each block refines the understanding further.
+        That's what makes it a "Large" Language Model.
+      </p>
+
+      {/* Visual: blocks stacking */}
+      <div className="tp-section">
+        <div className="tp-label">Your {tokens.length} tokens flow through the full stack</div>
+        <div className="tp-transformer-blocks">
+          {[1, 2, 3, 4, 5].map(n => (
+            <div key={n} className="tp-block-card" style={{ "--delay": `${n * 0.1}s` }}>
+              <div className="tp-block-num">Block {n}</div>
+              <div className="tp-block-contents">
+                <span className="tp-block-op">LayerNorm</span>
+                <span className="tp-block-op attn">Attention</span>
+                <span className="tp-block-op">LayerNorm</span>
+                <span className="tp-block-op ffn">FFN</span>
+              </div>
+            </div>
+          ))}
+          <div className="tp-block-dots">⋮</div>
+          {[94, 95, 96].map(n => (
+            <div key={n} className="tp-block-card dim" style={{ "--delay": `${0.6 + (n - 94) * 0.1}s` }}>
+              <div className="tp-block-num">Block {n}</div>
+              <div className="tp-block-contents">
+                <span className="tp-block-op">LN</span>
+                <span className="tp-block-op attn">Attn</span>
+                <span className="tp-block-op">LN</span>
+                <span className="tp-block-op ffn">FFN</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="tp-arrow-down"><span>Each block: attention + feed-forward + residual connections</span></div>
+
+      {/* Model comparison table */}
+      <div className="tp-section">
+        <div className="tp-label">Scale Comparison: Your Demo vs Real LLMs</div>
+        <div className="tp-model-table">
+          {modelComparison.map((m, i) => (
+            <div key={i} className="tp-model-row" style={{ "--delay": `${i * 0.1}s`, borderLeftColor: m.color }}>
+              <div className="tp-model-name" style={{ color: m.color }}>{m.name}</div>
+              <div className="tp-model-stats">
+                <span className="tp-model-stat">{m.layers} layers</span>
+                <span className="tp-model-stat">{m.params} params</span>
+                <span className="tp-model-stat">{m.context} context</span>
+              </div>
+              <div className="tp-model-bar">
+                <div className="tp-model-bar-fill" style={{ width: `${Math.min(100, Math.log10(parseInt(m.params) || 50) * 20)}%`, backgroundColor: m.color }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="tp-math-box">
+        <div className="tp-math-title">One Transformer Block (Pseudocode)</div>
+        <div className="tp-math-content">
+          <code>{`// Each of 96 blocks does this:
+x = x + Attention(LayerNorm(x))    // attend to context
+x = x + FFN(LayerNorm(x))          // transform features
+
+// Where FFN is:
+FFN(x) = GELU(x × W_up) × W_down  // up-project, activate, down-project
+// W_up: [4096 → 16384], W_down: [16384 → 4096]`}</code>
+        </div>
+      </div>
+
+      <div className="tp-insight">
+        <strong>Key insight:</strong> Same architecture, same math operations — the only difference between
+        your demo and GPT-4 is <strong>scale</strong>. GPT-4 has 120 layers with 1.8 trillion learned parameters,
+        trained on trillions of tokens. The architecture you just learned IS the architecture of ChatGPT.
+      </div>
+    </div>
+  );
+}
+
+
+// ─── Stage 8: RAG (Retrieval-Augmented Generation) ──────────────────
+function RAGVisual({ input }) {
+  const miniDocs = [
+    { title: "Company Refund Policy", content: "Full refund within 30 days. Items must be unused.", score: 0.91 },
+    { title: "Shipping Information", content: "Standard shipping 5-7 days. Express available $12.99.", score: 0.34 },
+    { title: "Product Warranty", content: "2-year manufacturer warranty on all electronics.", score: 0.28 },
+    { title: "Account Settings", content: "Change password in Settings > Security.", score: 0.15 },
+  ];
+
+  // Sort by relevance to simulate search
+  const sorted = [...miniDocs].sort((a, b) => b.score - a.score);
+
+  return (
+    <div className="tp-panel">
+      <div className="tp-panel-header">
+        <h2>🔍 Step 8: RAG (Retrieval-Augmented Generation)</h2>
+        <span className="tp-panel-badge">External Knowledge</span>
+      </div>
+      <p className="tp-panel-desc">
+        LLMs only know their training data. When you ask about <strong>your</strong> company docs,
+        yesterday's news, or private data — they can't know. <strong>RAG</strong> solves this:
+        search relevant documents FIRST, stuff them into the prompt, THEN generate.
+      </p>
+
+      {/* Visual: 4-step RAG pipeline */}
+      <div className="tp-section">
+        <div className="tp-label">The RAG Pipeline (4 Steps)</div>
+        <div className="tp-rag-pipeline">
+          <div className="tp-rag-step" style={{ "--delay": "0s" }}>
+            <div className="tp-rag-step-num">1</div>
+            <div className="tp-rag-step-body">
+              <div className="tp-rag-step-title">Embed the Query</div>
+              <div className="tp-rag-step-desc">Convert your question into a vector using the same embedding model</div>
+              <div className="tp-rag-step-example">
+                <code>"{input}" → [0.23, -0.41, 0.87, ..., 0.12]</code>
+              </div>
+            </div>
+          </div>
+
+          <div className="tp-rag-arrow">↓</div>
+
+          <div className="tp-rag-step" style={{ "--delay": "0.15s" }}>
+            <div className="tp-rag-step-num">2</div>
+            <div className="tp-rag-step-body">
+              <div className="tp-rag-step-title">Search Vector Database</div>
+              <div className="tp-rag-step-desc">Find documents whose vectors are closest (cosine similarity)</div>
+              <div className="tp-rag-search-results">
+                {sorted.map((doc, i) => (
+                  <div key={i} className={`tp-rag-doc ${i === 0 ? "top" : ""}`}>
+                    <span className="tp-rag-doc-score" style={{ color: doc.score > 0.7 ? "#34d399" : doc.score > 0.3 ? "#fbbf24" : "#64748b" }}>
+                      {(doc.score * 100).toFixed(0)}%
+                    </span>
+                    <span className="tp-rag-doc-title">{doc.title}</span>
+                    <span className="tp-rag-doc-preview">{doc.content}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="tp-rag-arrow">↓</div>
+
+          <div className="tp-rag-step" style={{ "--delay": "0.3s" }}>
+            <div className="tp-rag-step-num">3</div>
+            <div className="tp-rag-step-body">
+              <div className="tp-rag-step-title">Augment the Prompt</div>
+              <div className="tp-rag-step-desc">Stuff retrieved documents into the LLM's context window</div>
+              <div className="tp-rag-prompt-template">
+                <code>{`Given this context:
+[${sorted[0].title}]: ${sorted[0].content}
+
+User question: ${input}
+
+Answer based on the context above:`}</code>
+              </div>
+            </div>
+          </div>
+
+          <div className="tp-rag-arrow">↓</div>
+
+          <div className="tp-rag-step" style={{ "--delay": "0.45s" }}>
+            <div className="tp-rag-step-num">4</div>
+            <div className="tp-rag-step-body">
+              <div className="tp-rag-step-title">Generate with Context</div>
+              <div className="tp-rag-step-desc">LLM generates a response grounded in the retrieved documents (not hallucinating)</div>
+              <div className="tp-rag-response">
+                <span className="tp-rag-response-label">LLM output (grounded):</span>
+                <span className="tp-rag-response-text">Based on our documentation, {sorted[0].content.toLowerCase()}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Without vs With RAG comparison */}
+      <div className="tp-section">
+        <div className="tp-label">Without RAG vs With RAG</div>
+        <div className="tp-rag-comparison">
+          <div className="tp-rag-compare-col bad">
+            <div className="tp-rag-compare-title">❌ Without RAG</div>
+            <div className="tp-rag-compare-text">
+              "I don't have specific information about your refund policy. Generally, most companies offer 14-30 day return windows..."
+            </div>
+            <span className="tp-rag-compare-verdict">Hallucinated / generic</span>
+          </div>
+          <div className="tp-rag-compare-col good">
+            <div className="tp-rag-compare-title">✅ With RAG</div>
+            <div className="tp-rag-compare-text">
+              "Based on your documentation: Full refund within 30 days. Items must be unused and in original packaging."
+            </div>
+            <span className="tp-rag-compare-verdict">Accurate / grounded</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="tp-math-box">
+        <div className="tp-math-title">RAG Formula</div>
+        <div className="tp-math-content">
+          <code>{`// The complete RAG pipeline:
+query_vector = embed(user_question)
+documents = vector_db.search(query_vector, top_k=3)
+prompt = f"Context: {documents}\\nQuestion: {user_question}\\nAnswer:"
+response = LLM.generate(prompt)  // runs through all 7 steps above`}</code>
+        </div>
+      </div>
+
+      <div className="tp-insight">
+        <strong>Key insight:</strong> RAG doesn't change the model — it changes the <strong>input</strong>.
+        By putting relevant documents IN the prompt, the LLM can "read" them and answer accurately.
+        This is how ChatGPT plugins, enterprise bots, and Claude's document analysis work.
       </div>
     </div>
   );

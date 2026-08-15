@@ -287,6 +287,29 @@
 }
 
 /* ═══ Responsive ═══ */
+@media (max-width: 768px) {
+  .math-explorer {
+    padding: 0;
+  }
+
+  .math-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .quiz-question-card {
+    padding: 12px;
+  }
+
+  .lesson-card {
+    padding: 14px;
+  }
+
+  .formula-display code {
+    font-size: 0.75rem;
+    word-break: break-all;
+  }
+}
+
 @media (max-width: 640px) {
   .math-steps-nav .ant-steps {
     overflow-x: auto;
@@ -305,5 +328,48 @@
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
+  }
+
+  .topic-mode-switch {
+    width: 100%;
+  }
+
+  .topic-mode-switch .ant-space {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .topic-mode-switch .ant-btn {
+    flex: 1;
+  }
+
+  .key-points-list li {
+    font-size: 13px;
+  }
+
+  .example-section code {
+    font-size: 11px;
+    word-break: break-all;
+  }
+}
+
+@media (max-width: 480px) {
+  .math-header h2 {
+    font-size: 1.05rem;
+  }
+
+  .topic-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .quiz-option {
+    font-size: 13px;
+  }
+
+  .math-bottom-nav .ant-btn {
+    font-size: 12px;
+    padding: 4px 10px;
   }
 }

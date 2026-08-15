@@ -1,291 +1,318 @@
-import { Typography, Button, Card, Row, Col, Statistic, Space, Divider, Steps, Progress, Collapse, Tag, Tooltip } from "antd";
+import { Typography, Button, Row, Col, Space, Divider, Progress, Tag } from "antd";
 import {
-  RocketOutlined,
-  ExperimentOutlined,
-  MessageOutlined,
+  FunctionOutlined,
+  RobotOutlined,
   EyeOutlined,
   EditOutlined,
-  FunctionOutlined,
-  DashboardOutlined,
-  DatabaseOutlined,
-  NodeIndexOutlined,
-  CompressOutlined,
-  ClusterOutlined,
-  AppstoreOutlined,
   PlayCircleOutlined,
   ThunderboltOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   ArrowRightOutlined,
-  BookOutlined,
-  TrophyOutlined,
   LockOutlined,
+  TrophyOutlined,
 } from "@ant-design/icons";
 import "./Landing.css";
 
 const { Title, Paragraph, Text } = Typography;
 
-// The 4-step guided learning path for students
 const LEARNING_PATH = [
   {
     key: "math",
     title: "Math Lab",
-    subtitle: "The math behind AI",
-    desc: "Matrix multiplication, softmax, ReLU — interactive step-by-step calculations. No calculus needed, just curiosity. This is the foundation everything else builds on.",
+    subtitle: "Master the building blocks",
     icon: <FunctionOutlined />,
-    time: "8 min",
+    color: "#fbbf24",
+    gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+    time: "15 min",
     prereq: null,
   },
   {
-    key: "text",
-    title: "Text Pipeline",
-    subtitle: "How AI reads words",
-    desc: "See how a sentence becomes numbers → embeddings → attention → prediction. The foundation of ChatGPT and every language model.",
-    icon: <MessageOutlined />,
-    time: "5 min",
+    key: "textai",
+    title: "Text AI",
+    subtitle: "How ChatGPT thinks",
+    icon: <RobotOutlined />,
+    color: "#4a90e2",
+    gradient: "linear-gradient(135deg, #4a90e2 0%, #3b82f6 100%)",
+    time: "40 min",
     prereq: "Math Lab",
   },
   {
-    key: "image",
-    title: "Vision Pipeline",
+    key: "visionai",
+    title: "Vision AI",
     subtitle: "How AI sees images",
-    desc: "Upload an image and watch a CNN process it: convolution → ReLU → pooling → classification. Every calculation shown.",
     icon: <EyeOutlined />,
-    time: "6 min",
-    prereq: "Text Pipeline",
+    color: "#34d399",
+    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+    time: "20 min",
+    prereq: "Text AI",
   },
   {
     key: "mnist",
-    title: "Live Inference",
-    subtitle: "Draw and predict",
-    desc: "Draw a digit with your mouse and watch the neural network activate in real time. See neurons fire layer by layer.",
+    title: "Playground",
+    subtitle: "Draw & predict live",
     icon: <EditOutlined />,
-    time: "3 min",
-    prereq: "Vision Pipeline",
+    color: "#a78bfa",
+    gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
+    time: "5 min",
+    prereq: "Vision AI",
   },
-];
-
-// Advanced systems section
-const SYSTEMS = [
-  { key: "arch", icon: <RocketOutlined />, title: "Architecture", desc: "Full system overview" },
-  { key: "kernels", icon: <DashboardOutlined />, title: "SIMD Kernels", desc: "ARM NEON, 22 GFLOPS" },
-  { key: "memory", icon: <DatabaseOutlined />, title: "Memory Arena", desc: "918× faster than malloc" },
-  { key: "graph", icon: <NodeIndexOutlined />, title: "Graph Compiler", desc: "Operator fusion passes" },
-  { key: "quantize", icon: <CompressOutlined />, title: "Quantization", desc: "INT8: 4× compression" },
-  { key: "threads", icon: <ClusterOutlined />, title: "Thread Pool", desc: "Parallel task execution" },
-  { key: "tensor", icon: <AppstoreOutlined />, title: "Tensor Engine", desc: "Zero-copy ops" },
 ];
 
 export default function Landing({ onNavigate, visitedPages = [] }) {
   const completedSteps = LEARNING_PATH.filter(s => visitedPages.includes(s.key)).length;
-  const progressPercent = Math.round((completedSteps / LEARNING_PATH.length) * 100);
-
-  // Find the next uncompleted step
   const nextStep = LEARNING_PATH.find(s => !visitedPages.includes(s.key));
 
   return (
     <div className="landing">
-      {/* ═══ Hero Section ═══ */}
+      {/* ═══ Hero ═══ */}
       <section className="landing-hero">
         <div className="hero-glow" />
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
+
         <div className="hero-content">
-          <Tag color="blue" className="hero-tag">Interactive AI Education</Tag>
-          <Title level={1} className="hero-title">
-            Understand AI by <span className="hero-highlight">watching it think.</span>
-          </Title>
-          <Paragraph className="hero-desc">
-            Not another textbook. Not another video. This is a live, interactive playground
-            where you see every calculation — from raw text to prediction — happening in real time.
-          </Paragraph>
-          <Space size="large" className="hero-actions">
+          <div className="hero-badge">
+            <ThunderboltOutlined /> AI Education Platform
+          </div>
+
+          <h1 className="hero-title-custom">
+            See how AI
+            <span className="hero-gradient-text"> actually thinks.</span>
+          </h1>
+
+          <p className="hero-subtitle">
+            Type a prompt. Watch every calculation. Understand transformers, attention, and neural networks — not by reading, but by <em>seeing them run</em>.
+          </p>
+
+          <div className="hero-cta-row">
             <Button
               type="primary"
               size="large"
               icon={<PlayCircleOutlined />}
-              className="hero-btn-primary"
-              onClick={() => onNavigate(nextStep?.key || "text")}
+              className="hero-btn-start"
+              onClick={() => onNavigate(nextStep?.key || "math")}
             >
-              {completedSteps === 0 ? "Start Learning" : "Continue Learning"}
+              {completedSteps === 0 ? "Start the Journey" : "Continue"}
             </Button>
-            <Button
-              size="large"
-              icon={<ExperimentOutlined />}
-              onClick={() => onNavigate("mnist")}
-            >
-              Jump to demo
-            </Button>
-          </Space>
-        </div>
-
-        {/* Floating stats */}
-        <div className="hero-stats">
-          <div className="hero-stat-pill">
-            <ThunderboltOutlined /> Real C++ engine running in your browser
-          </div>
-          <div className="hero-stat-pill">
-            <CheckCircleOutlined /> No signup required
-          </div>
-          <div className="hero-stat-pill">
-            <BookOutlined /> Beginner friendly
+            {completedSteps > 0 && (
+              <div className="hero-progress-mini">
+                <Progress
+                  type="circle"
+                  percent={Math.round((completedSteps / 4) * 100)}
+                  size={40}
+                  strokeColor="#4a90e2"
+                  format={() => `${completedSteps}/4`}
+                />
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* ═══ Learning Progress ═══ */}
-      {completedSteps > 0 && (
-        <section className="landing-progress">
-          <Card className="progress-card" bordered={false}>
-            <Row align="middle" gutter={16}>
-              <Col flex="auto">
-                <Space>
-                  <TrophyOutlined style={{ fontSize: 20, color: "#fbbf24" }} />
-                  <Text strong>Your Progress</Text>
-                  <Text type="secondary">— {completedSteps} of {LEARNING_PATH.length} concepts explored</Text>
-                </Space>
-              </Col>
-              <Col>
-                <Progress
-                  percent={progressPercent}
-                  steps={4}
-                  size="small"
-                  strokeColor="#4a90e2"
-                />
-              </Col>
-            </Row>
-          </Card>
-        </section>
-      )}
-
-      {/* ═══ Guided Learning Path ═══ */}
+      {/* ═══ Learning Path — Visual Cards ═══ */}
       <section className="landing-path">
-        <div className="section-header">
-          <Title level={3}>
-            <BookOutlined style={{ marginRight: 8 }} />
-            Start Here — 4 Steps to Understand AI
-          </Title>
-          <Paragraph type="secondary">
-            Follow this path in order. Each concept builds on the last. Takes about 20 minutes total.
-          </Paragraph>
+        <div className="path-header">
+          <span className="path-header-num">4 modules</span>
+          <span className="path-header-line" />
+          <span className="path-header-label">from zero to live inference</span>
         </div>
 
-        <div className="path-grid">
+        <div className="path-cards">
           {LEARNING_PATH.map((step, idx) => {
             const isCompleted = visitedPages.includes(step.key);
             const isNext = step.key === nextStep?.key;
             const isLocked = idx > 0 && !visitedPages.includes(LEARNING_PATH[idx - 1].key) && !isCompleted;
 
             return (
-              <div
-                key={step.key}
-                className={`path-card ${isCompleted ? "completed" : ""} ${isNext ? "next" : ""} ${isLocked ? "locked" : ""}`}
-                onClick={() => !isLocked && onNavigate(step.key)}
-              >
-                <div className="path-card-number">
-                  {isCompleted
-                    ? <CheckCircleOutlined style={{ color: "#34d399" }} />
-                    : isLocked
-                      ? <LockOutlined style={{ color: "#64748b" }} />
-                      : <ClockCircleOutlined style={{ color: "#fbbf24" }} />
-                  }
-                </div>
-                <div className="path-card-icon">{step.icon}</div>
-                <div className="path-card-body">
-                  <Text strong className="path-card-title">{step.title}</Text>
-                  <Text type="secondary" className="path-card-subtitle">{step.subtitle}</Text>
-                  <Paragraph type="secondary" className="path-card-desc">{step.desc}</Paragraph>
-                </div>
-                <div className="path-card-footer">
-                  <Tag>{step.time}</Tag>
-                  {isCompleted && <Tag color="success" icon={<CheckCircleOutlined />}>Completed</Tag>}
-                  {!isCompleted && isNext && <Tag color="blue">Up Next</Tag>}
-                  {!isCompleted && !isNext && !isLocked && (
-                    <Tag color="warning" icon={<ClockCircleOutlined />}>Pending</Tag>
+              <div key={step.key} className="path-card-wrapper">
+                {/* Connector arrow */}
+                {idx > 0 && <div className="path-connector"><ArrowRightOutlined /></div>}
+
+                <div
+                  className={`path-card-v2 ${isCompleted ? "completed" : ""} ${isNext ? "next" : ""} ${isLocked ? "locked" : ""}`}
+                  onClick={() => !isLocked && onNavigate(step.key)}
+                >
+                  {/* Top colored strip */}
+                  <div className="pc-top-strip" style={{ background: isLocked ? "#374151" : step.gradient }} />
+
+                  {/* Number badge */}
+                  <div className="pc-number" style={{ background: isCompleted ? "#34d399" : isLocked ? "#374151" : step.color }}>
+                    {isCompleted ? <CheckCircleOutlined /> : isLocked ? <LockOutlined /> : idx + 1}
+                  </div>
+
+                  {/* Icon */}
+                  <div className="pc-icon" style={{ color: isLocked ? "#4b5563" : step.color }}>
+                    {step.icon}
+                  </div>
+
+                  {/* Text */}
+                  <div className="pc-title">{step.title}</div>
+                  <div className="pc-subtitle">{step.subtitle}</div>
+
+                  {/* Footer */}
+                  <div className="pc-footer">
+                    <span className="pc-time">{step.time}</span>
+                    {isCompleted && <span className="pc-status done">Done</span>}
+                    {isNext && <span className="pc-status next-tag">Next</span>}
+                    {isLocked && <span className="pc-status locked-tag">Locked</span>}
+                  </div>
+
+                  {/* CTA for next */}
+                  {isNext && (
+                    <button className="pc-cta" onClick={(e) => { e.stopPropagation(); onNavigate(step.key); }}>
+                      Start <ArrowRightOutlined />
+                    </button>
                   )}
-                  {isLocked && (
-                    <Tooltip title={`Complete "${step.prereq}" first`}>
-                      <Tag icon={<LockOutlined />}>Locked</Tag>
-                    </Tooltip>
-                  )}
                 </div>
-                {isNext && (
-                  <Button
-                    type="primary"
-                    icon={<ArrowRightOutlined />}
-                    className="path-card-cta"
-                    onClick={(e) => { e.stopPropagation(); onNavigate(step.key); }}
-                  >
-                    Start
-                  </Button>
-                )}
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* ═══ Stats Bar ═══ */}
-      <section className="landing-numbers">
-        <Row gutter={[24, 24]} justify="center">
-          <Col><div className="stat-glass"><Statistic title="GFLOPS" value={22} valueStyle={{ color: "#4a90e2" }} /></div></Col>
-          <Col><div className="stat-glass"><Statistic title="vs malloc" value="918x" valueStyle={{ color: "#34d399" }} /></div></Col>
-          <Col><div className="stat-glass"><Statistic title="Tests" value="216+" valueStyle={{ color: "#a78bfa" }} /></div></Col>
-          <Col><div className="stat-glass"><Statistic title="Accuracy" value="100%" valueStyle={{ color: "#fbbf24" }} /></div></Col>
-          <Col><div className="stat-glass"><Statistic title="Standard" value="C++20" valueStyle={{ color: "#fb923c" }} /></div></Col>
-        </Row>
+      {/* ═══ Quick Stats — visual, minimal ═══ */}
+      <section className="landing-stats">
+        <div className="stats-row">
+          <div className="stat-item"><span className="stat-value">22</span><span className="stat-label">GFLOPS</span></div>
+          <div className="stat-divider" />
+          <div className="stat-item"><span className="stat-value">918x</span><span className="stat-label">vs malloc</span></div>
+          <div className="stat-divider" />
+          <div className="stat-item"><span className="stat-value">C++20</span><span className="stat-label">standard</span></div>
+          <div className="stat-divider" />
+          <div className="stat-item"><span className="stat-value">0</span><span className="stat-label">ML deps</span></div>
+        </div>
       </section>
 
-      {/* ═══ How It All Connects ═══ */}
-      <section className="landing-connect">
-        <Card bordered={false} className="connect-card">
-          <Paragraph style={{ fontSize: 16, textAlign: "center", marginBottom: 8 }}>
-            <Text code>Attention(Q, K, V)</Text> is an algorithm.{" "}
-            Making it run at <Text strong>7,485 images/sec</Text> with{" "}
-            <Text strong>552 bytes</Text> peak memory is systems engineering.
-          </Paragraph>
-          <Paragraph type="secondary" style={{ textAlign: "center", marginBottom: 0 }}>
-            This project teaches you both.
-          </Paragraph>
-        </Card>
+      {/* ═══ What's inside — 3 short pills ═══ */}
+      <section className="landing-pills">
+        <div className="pill-row">
+          <div className="pill-card">
+            <span className="pill-emoji">🧮</span>
+            <span className="pill-text">Real math — every dot product shown</span>
+          </div>
+          <div className="pill-card">
+            <span className="pill-emoji">⚡</span>
+            <span className="pill-text">C++ engine running in your browser</span>
+          </div>
+          <div className="pill-card">
+            <span className="pill-emoji">🎯</span>
+            <span className="pill-text">Type your own prompts, see results</span>
+          </div>
+        </div>
       </section>
 
-      {/* ═══ Advanced: Systems (Collapsed) ═══ */}
-      <section className="landing-advanced">
-        <Collapse
-          ghost
-          items={[{
-            key: "systems",
-            label: (
-              <Space>
-                <ThunderboltOutlined />
-                <Text strong>Advanced: How the C++ Engine Works</Text>
-                <Tag color="gold">Coming Soon</Tag>
-              </Space>
-            ),
-            children: (
-              <Row gutter={[12, 12]}>
-                {SYSTEMS.map(s => (
-                  <Col xs={24} sm={12} md={8} key={s.key}>
-                    <Card
-                      size="small"
-                      className="system-card"
-                      style={{ opacity: 0.6, cursor: "not-allowed" }}
-                      styles={{ body: { padding: "14px 16px" } }}
-                    >
-                      <Space>
-                        <span style={{ fontSize: 18, color: "#64748b" }}>{s.icon}</span>
-                        <div>
-                          <Text strong style={{ color: "#94a3b8" }}>{s.title}</Text>
-                          <br />
-                          <Text type="secondary" style={{ fontSize: 12 }}>{s.desc}</Text>
-                        </div>
-                      </Space>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            ),
-          }]}
-        />
+      {/* ═══ Under the Hood — Tech & Reasoning ═══ */}
+      <section className="landing-under-hood">
+        <div className="uh-header">
+          <span className="uh-header-icon">🔧</span>
+          <div>
+            <h3 className="uh-title">Under the Hood</h3>
+            <p className="uh-desc">What powers each module and what's real vs simulated</p>
+          </div>
+        </div>
+
+        <div className="uh-grid">
+          {/* Module cards */}
+          <div className="uh-card">
+            <div className="uh-card-header" style={{ borderColor: "#fbbf24" }}>
+              <span className="uh-card-icon" style={{ color: "#fbbf24" }}>🧮</span>
+              <span className="uh-card-name">Math Lab</span>
+            </div>
+            <div className="uh-card-body">
+              <div className="uh-fact"><span className="uh-tag real">Real</span> C++ MatMul, Softmax, ReLU, GELU via WebAssembly</div>
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Step-by-step computation traces from engine</div>
+              <div className="uh-fact"><span className="uh-tag sim">Demo</span> Uses small matrices (2x2, 3x3) for clarity</div>
+            </div>
+          </div>
+
+          <div className="uh-card">
+            <div className="uh-card-header" style={{ borderColor: "#4a90e2" }}>
+              <span className="uh-card-icon" style={{ color: "#4a90e2" }}>💬</span>
+              <span className="uh-card-name">Text AI Pipeline</span>
+            </div>
+            <div className="uh-card-body">
+              <div className="uh-fact"><span className="uh-tag real">Real</span> BPE tokenizer (C++ vocabulary lookup)</div>
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Attention dot-product + softmax math</div>
+              <div className="uh-fact"><span className="uh-tag sim">Demo</span> Embeddings are pseudo-random (not trained)</div>
+              <div className="uh-fact"><span className="uh-tag sim">Demo</span> Predictions simulated (no real LLM weights)</div>
+            </div>
+          </div>
+
+          <div className="uh-card">
+            <div className="uh-card-header" style={{ borderColor: "#34d399" }}>
+              <span className="uh-card-icon" style={{ color: "#34d399" }}>👁</span>
+              <span className="uh-card-name">Vision AI</span>
+            </div>
+            <div className="uh-card-body">
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Convolution, ReLU, MaxPool computations</div>
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Trained MNIST model (98.5% accuracy)</div>
+              <div className="uh-fact"><span className="uh-tag sim">Limited</span> Only digits 0-9 (MNIST dataset)</div>
+            </div>
+          </div>
+
+          <div className="uh-card">
+            <div className="uh-card-header" style={{ borderColor: "#a78bfa" }}>
+              <span className="uh-card-icon" style={{ color: "#a78bfa" }}>✏️</span>
+              <span className="uh-card-name">MNIST Live</span>
+            </div>
+            <div className="uh-card-body">
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Trained neural network (784→128→10)</div>
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Live inference via C++/WASM</div>
+              <div className="uh-fact"><span className="uh-tag real">Real</span> Neuron activations visualized from actual forward pass</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tech stack strip */}
+        <div className="uh-stack">
+          <div className="uh-stack-title">Tech Stack</div>
+          <div className="uh-stack-items">
+            <div className="uh-stack-item">
+              <span className="uh-stack-label">Engine</span>
+              <span className="uh-stack-value">C++20 → WebAssembly</span>
+            </div>
+            <div className="uh-stack-item">
+              <span className="uh-stack-label">Frontend</span>
+              <span className="uh-stack-value">React 19 + Ant Design</span>
+            </div>
+            <div className="uh-stack-item">
+              <span className="uh-stack-label">Build</span>
+              <span className="uh-stack-value">Vite + Emscripten</span>
+            </div>
+            <div className="uh-stack-item">
+              <span className="uh-stack-label">ML Deps</span>
+              <span className="uh-stack-value">Zero (all from scratch)</span>
+            </div>
+            <div className="uh-stack-item">
+              <span className="uh-stack-label">Dataset</span>
+              <span className="uh-stack-value">MNIST (60K images)</span>
+            </div>
+            <div className="uh-stack-item">
+              <span className="uh-stack-label">Compute</span>
+              <span className="uh-stack-value">100% client-side</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Why built this way */}
+        <div className="uh-why">
+          <div className="uh-why-title">Why build an AI engine from scratch?</div>
+          <div className="uh-why-points">
+            <div className="uh-why-point">
+              <span className="uh-why-num">1</span>
+              <span>To show that AI isn't magic — it's math you can trace step by step</span>
+            </div>
+            <div className="uh-why-point">
+              <span className="uh-why-num">2</span>
+              <span>To make every operation visible: attention, softmax, matmul — all computed live</span>
+            </div>
+            <div className="uh-why-point">
+              <span className="uh-why-num">3</span>
+              <span>To demonstrate systems engineering: SIMD kernels, memory allocators, graph compilation</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ═══ Footer ═══ */}
@@ -293,7 +320,6 @@ export default function Landing({ onNavigate, visitedPages = [] }) {
         <Space split={<Divider type="vertical" />} size="small" wrap>
           <Text type="secondary">Open source</Text>
           <Text type="secondary">MIT license</Text>
-          <Text type="secondary">No external ML deps</Text>
           <Text type="secondary">Apple Silicon optimized</Text>
         </Space>
       </div>

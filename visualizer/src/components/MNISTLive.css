@@ -162,9 +162,77 @@
 .sm-row.winner .sm-pct { color: var(--success); font-weight: 600; }
 
 /* ─── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .mnist-layout {
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+  }
+}
+
 @media (max-width: 700px) {
-  .mnist-layout { grid-template-columns: 1fr; }
-  .mnist-draw-section { position: static; max-width: 280px; margin: 0 auto; }
+  .mnist-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .mnist-draw-section {
+    position: static;
+    max-width: 280px;
+    margin: 0 auto;
+  }
+  .nn-svg {
+    max-height: 300px;
+  }
+  .nn-legend {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .nz-grid-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nz-mini-grid {
+    width: 100px;
+    height: 100px;
+  }
+  .nz-operator {
+    transform: rotate(90deg);
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mnist-header h1 {
+    font-size: 1.2rem;
+  }
+  .mnist-draw-section {
+    max-width: 240px;
+  }
+  .canvas-container canvas {
+    max-width: 240px;
+    max-height: 240px;
+  }
+  .nn-svg {
+    max-height: 250px;
+  }
+  .nn-flow-explain {
+    padding: 0.75rem;
+  }
+  .flow-step {
+    font-size: 0.72rem;
+  }
+  .neuron-zoom {
+    padding: 1rem;
+  }
+  .nz-mini-grid {
+    width: 84px;
+    height: 84px;
+  }
+  .prediction-box {
+    padding: 0.75rem;
+  }
+  .pred-digit {
+    font-size: 2.5rem;
+  }
 }
 
 /* ═══ Neural Network Visualization ═══ */

@@ -2,7 +2,10 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
@@ -10,6 +13,19 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+/* Prevent horizontal overflow on mobile */
+#root {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Fluid images */
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
