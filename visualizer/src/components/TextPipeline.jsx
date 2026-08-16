@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { getTokenIds } from "../engine/nn_wasm";
 import "./TextPipeline.css";
 
-// ─── Utility Functions ───────────────────────────────────────────────
+// Utility Functions
 function hashStr(str) {
   let h = 5381;
   for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
@@ -63,7 +63,7 @@ const TOKEN_COLORS = [
   "#22d3ee", "#fbbf24", "#818cf8", "#6ee7b7", "#f472b6",
 ];
 
-// ─── Main Component ──────────────────────────────────────────────────
+// Main Component
 export default function TextPipeline({ onComplete }) {
   const [input, setInput] = useState("How I help myself to learn something");
   const [activeStage, setActiveStage] = useState(-1);
@@ -219,7 +219,7 @@ export default function TextPipeline({ onComplete }) {
 }
 
 
-// ─── Stage 1: Tokenization Visual ───────────────────────────────────
+// Stage 1: Tokenization Visual
 function TokenizationVisual({ tokens, tokenIds }) {
   return (
     <div className="tp-panel">
@@ -278,7 +278,7 @@ function TokenizationVisual({ tokens, tokenIds }) {
   );
 }
 
-// ─── Info Tooltip Component ──────────────────────────────────────────
+// InfoTip
 function InfoTip({ children }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -307,7 +307,7 @@ function InfoTip({ children }) {
   );
 }
 
-// ─── Stage 2: Embedding Visual ──────────────────────────────────────
+// Stage 2: Embedding Visual
 function EmbeddingVisual({ tokens, tokenIds, embeddings }) {
   return (
     <div className="tp-panel">
@@ -324,7 +324,7 @@ function EmbeddingVisual({ tokens, tokenIds, embeddings }) {
         </InfoTip>
       </div>
 
-      {/* ═══ VISUALIZATION FIRST ═══ */}
+      {/* Embedding visualization */}
       <div className="tp-section">
         <div className="tp-label">
           Embedding Matrix Lookup
@@ -405,7 +405,7 @@ function EmbeddingVisual({ tokens, tokenIds, embeddings }) {
 }
 
 
-// ─── Stage 3: Positional Encoding ───────────────────────────────────
+// Stage 3: Positional Encoding
 function PositionalVisual({ tokens, embeddings }) {
   const positions = tokens.map((_, i) => {
     return Array.from({ length: 16 }, (_, d) => {
@@ -534,7 +534,7 @@ function PositionalVisual({ tokens, embeddings }) {
   );
 }
 
-// ─── Attention Grid with Clickable Calculation Tooltips ──────────────
+// AttentionGrid
 function AttentionGrid({ tokens, scores, activeToken, setHighlightToken }) {
   const [selectedCell, setSelectedCell] = useState(null); // { i, j }
   const gridRef = useRef(null);
@@ -641,7 +641,7 @@ function AttentionGrid({ tokens, scores, activeToken, setHighlightToken }) {
   );
 }
 
-// ─── Stage 4: Self-Attention Visual ─────────────────────────────────
+// Stage 4: Self-Attention Visual
 function AttentionVisual({ tokens, scores, highlightToken, setHighlightToken }) {
   const activeToken = highlightToken >= 0 ? highlightToken : 0;
 
@@ -750,7 +750,7 @@ function AttentionVisual({ tokens, scores, highlightToken, setHighlightToken }) 
 }
 
 
-// ─── Stage 5: Feed-Forward Visual ───────────────────────────────────
+// Stage 5: Feed-Forward Visual
 function FeedForwardVisual({ tokens }) {
   const layerSizes = [768, 3072, 768];
 
@@ -914,7 +914,7 @@ function FeedForwardVisual({ tokens }) {
   );
 }
 
-// ─── Stage 6: Output Prediction Visual ──────────────────────────────
+// Stage 6: Output Prediction Visual
 function OutputVisual({ input, predictions }) {
   const topWord = predictions[0];
 
@@ -1064,7 +1064,7 @@ function OutputVisual({ input, predictions }) {
 }
 
 
-// ─── Stage 7: Transformer Stack / LLM Scaling ───────────────────────
+// Stage 7: Transformer Stack / LLM Scaling
 function TransformerStackVisual({ tokens }) {
   const modelComparison = [
     { name: "This Demo", layers: 1, params: "~50", context: "10 tokens", color: "#4a90e2" },
@@ -1161,7 +1161,7 @@ FFN(x) = GELU(x × W_up) × W_down  // up-project, activate, down-project
 }
 
 
-// ─── Stage 8: RAG (Retrieval-Augmented Generation) ──────────────────
+// Stage 8: RAG
 function RAGVisual({ input }) {
   const miniDocs = [
     { title: "Company Refund Policy", content: "Full refund within 30 days. Items must be unused.", score: 0.91 },

@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   Landing — Bold, visual, exciting
-   ═══════════════════════════════════════════════════════════════════ */
+/* Landing */
 
 .landing {
   max-width: 900px;
@@ -8,7 +6,7 @@
   padding: 0 16px;
 }
 
-/* ═══ Hero ═══ */
+/* Hero */
 .landing-hero {
   position: relative;
   text-align: center;
@@ -138,7 +136,7 @@
   animation: fadeIn 0.3s ease-out;
 }
 
-/* ═══ Learning Path ═══ */
+/* Learning Path */
 .landing-path {
   margin-bottom: 48px;
 }
@@ -333,7 +331,7 @@
   transform: scale(1.05);
 }
 
-/* ═══ Stats ═══ */
+/* Stats */
 .landing-stats {
   margin-bottom: 40px;
 }
@@ -373,7 +371,7 @@
   background: var(--border);
 }
 
-/* ═══ Pills ═══ */
+/* Pills */
 .landing-pills {
   margin-bottom: 48px;
 }
@@ -406,7 +404,7 @@
   font-size: 16px;
 }
 
-/* ═══ Under the Hood ═══ */
+/* Under the Hood */
 .landing-under-hood {
   margin-bottom: 48px;
   padding-top: 32px;
@@ -609,14 +607,14 @@
   }
 }
 
-/* ═══ Footer ═══ */
+/* Footer */
 .landing-footer {
   text-align: center;
   padding: 24px 0 40px;
   border-top: 1px solid var(--border);
 }
 
-/* ═══ Responsive ═══ */
+/* Responsive */
 @media (max-width: 768px) {
   .hero-title-custom {
     font-size: 2.2rem;
@@ -687,7 +685,7 @@
   }
 }
 
-/* ═══ Animations ═══ */
+/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }

@@ -29,9 +29,7 @@ import "./TextAIJourney.css";
 
 const { Title, Paragraph, Text } = Typography;
 
-// ═══════════════════════════════════════════════════════════════════
-// 8 STAGES — complete end-to-end flow
-// ═══════════════════════════════════════════════════════════════════
+// 8 stages — complete end-to-end flow
 
 const STAGES = [
   {
@@ -250,10 +248,7 @@ struct RAGPipeline {
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// MINI NEXT-TOKEN PREDICTION DATASET
-// Simulates what a real LLM would predict as the next token
-// ═══════════════════════════════════════════════════════════════════
+// Next-token prediction dataset (simulated)
 
 const PREDICTION_DB = {
   "the": [{ token: "cat", prob: 0.15 }, { token: "model", prob: 0.12 }, { token: "AI", prob: 0.10 }, { token: "best", prob: 0.08 }, { token: "world", prob: 0.07 }],
@@ -333,9 +328,7 @@ function computeAttention(tokens) {
   return scores;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════
+// Main component
 
 export default function TextAIJourney({ onComplete }) {
   const [userInput, setUserInput] = useState("How does ChatGPT work");
@@ -650,7 +643,7 @@ export default function TextAIJourney({ onComplete }) {
         <Progress percent={progress} steps={8} strokeColor="#4a90e2" size="small" format={() => `${completedStages.length}/8`} />
       </div>
 
-      {/* ═══ YOUR INPUT — this flows through all stages ═══ */}
+      {/* User input section */}
       <div className="taj-input-section">
         <div className="taj-input-label">
           <RobotOutlined style={{ marginRight: 6 }} />
@@ -691,7 +684,7 @@ export default function TextAIJourney({ onComplete }) {
         })}
       </div>
 
-      {/* ═══ UNIFIED STAGE CARD — Visual + Learn + Code + Quiz as tabs ═══ */}
+      {/* Stage card */}
       <Card
         className="taj-stage-card"
         style={{ borderTop: `3px solid ${stage.color}` }}

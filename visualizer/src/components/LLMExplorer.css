@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   LLM Explorer — Styles
-   ═══════════════════════════════════════════════════════════════════ */
+/* LLM Explorer */
 
 .llm-explorer {
   max-width: 960px;
@@ -19,7 +17,7 @@
   margin-top: 16px;
 }
 
-/* ═══ Learn Mode ═══ */
+/* Learn Mode */
 .llm-learn {
   animation: fadeIn 0.3s ease-out;
 }
@@ -178,7 +176,7 @@
   border-top: 1px solid var(--border);
 }
 
-/* ═══ Experiment Mode ═══ */
+/* Experiment Mode */
 .llm-experiment {
   animation: fadeIn 0.3s ease-out;
 }
@@ -313,7 +311,7 @@
   gap: 10px;
 }
 
-/* ═══ Quiz Mode ═══ */
+/* Quiz Mode */
 .llm-quiz,
 .llm-result {
   animation: fadeIn 0.3s ease-out;
@@ -367,7 +365,7 @@
   margin-top: 24px;
 }
 
-/* ═══ Responsive ═══ */
+/* Responsive */
 @media (max-width: 768px) {
   .arch-layer-card {
     flex-direction: column;

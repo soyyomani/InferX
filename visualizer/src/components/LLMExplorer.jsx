@@ -18,9 +18,7 @@ import "./LLMExplorer.css";
 
 const { Title, Paragraph, Text } = Typography;
 
-// ═══════════════════════════════════════════════════════════════════
-// LESSON DATA
-// ═══════════════════════════════════════════════════════════════════
+// Lesson data
 
 const LESSON_SECTIONS = [
   {
@@ -82,9 +80,7 @@ const LESSON_SECTIONS = [
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// QUIZ DATA
-// ═══════════════════════════════════════════════════════════════════
+// Quiz data
 
 const QUIZ = [
   {
@@ -144,9 +140,7 @@ const QUIZ = [
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// INTERACTIVE EXPERIMENT: Token-by-token generation simulator
-// ═══════════════════════════════════════════════════════════════════
+// Token-by-token generation simulator
 
 // Simulated vocabulary with probabilities for demo
 const VOCAB_DEMO = {
@@ -244,9 +238,7 @@ function sampleToken(probs, temperature) {
   return normalized[normalized.length - 1];
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════
+// Main component
 
 export default function LLMExplorer({ onComplete }) {
   const [mode, setMode] = useState("learn"); // "learn" | "experiment" | "quiz" | "result"
@@ -272,7 +264,7 @@ export default function LLMExplorer({ onComplete }) {
   // Cleanup timer
   useEffect(() => () => { if (genTimerRef.current) clearInterval(genTimerRef.current); }, []);
 
-  // ─── Experiment Functions ─────────────────────────────────────
+  // --- Experiment functions
   function startGeneration() {
     setGenTokens([]);
     setSelectedToken(null);
@@ -344,7 +336,7 @@ export default function LLMExplorer({ onComplete }) {
     setIsGenerating(false);
   }
 
-  // ─── Quiz Functions ───────────────────────────────────────────
+  // --- Quiz functions
   function submitQuiz() {
     setQuizSubmitted(true);
     const correct = QUIZ.filter((q, i) => quizAnswers[i] === q.correct).length;
@@ -368,8 +360,7 @@ export default function LLMExplorer({ onComplete }) {
 
   const passed = quizScore >= 3;
 
-  // ═══════════════════════════════════════════════════════════════
-  // RENDER
+  // Render
   // ═══════════════════════════════════════════════════════════════
 
   return (
@@ -396,7 +387,7 @@ export default function LLMExplorer({ onComplete }) {
         </Space>
       </div>
 
-      {/* ═══ LEARN MODE ═══ */}
+      {/* Learn mode */}
       {mode === "learn" && (
         <div className="llm-learn">
           {/* Lesson navigation */}
@@ -524,7 +515,7 @@ export default function LLMExplorer({ onComplete }) {
         </div>
       )}
 
-      {/* ═══ EXPERIMENT MODE ═══ */}
+      {/* Experiment mode */}
       {mode === "experiment" && (
         <div className="llm-experiment">
           <Alert
@@ -656,7 +647,7 @@ export default function LLMExplorer({ onComplete }) {
         </div>
       )}
 
-      {/* ═══ QUIZ MODE ═══ */}
+      {/* Quiz mode */}
       {mode === "quiz" && (
         <div className="llm-quiz">
           <Alert
@@ -731,7 +722,7 @@ export default function LLMExplorer({ onComplete }) {
         </div>
       )}
 
-      {/* ═══ RESULT MODE ═══ */}
+      {/* Result mode */}
       {mode === "result" && (
         <div className="llm-result">
           <Result

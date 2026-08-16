@@ -26,9 +26,7 @@ import "./MathExplorer.css";
 
 const { Title, Paragraph, Text } = Typography;
 
-// ═══════════════════════════════════════════════════════════════════
-// TOPIC DATA — 6 sequential topics, each with lesson + 5 quiz questions
-// ═══════════════════════════════════════════════════════════════════
+// Topic data — 6 sequential topics, each with lesson + quiz
 
 const TOPICS = [
   {
@@ -392,9 +390,7 @@ const TOPICS = [
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════
+// Main component
 
 export default function MathExplorer({ onComplete }) {
   // Track which topics are completed (stored in localStorage)
@@ -533,7 +529,7 @@ export default function MathExplorer({ onComplete }) {
 
   return (
     <div className="math-explorer animate-in">
-      {/* ═══ Header ═══ */}
+      {/* Header */}
       <div className="math-header">
         <Title level={2} style={{ marginBottom: 4 }}>
           <span style={{ marginRight: 8 }}>∑</span>Math Lab
@@ -550,7 +546,7 @@ export default function MathExplorer({ onComplete }) {
         />
       </div>
 
-      {/* ═══ Topic Navigation (Steps) ═══ */}
+      {/* Topic Navigation */}
       <div className="math-steps-nav">
         <Steps
           current={currentTopicIdx}
@@ -575,7 +571,7 @@ export default function MathExplorer({ onComplete }) {
         />
       </div>
 
-      {/* ═══ Topic Content ═══ */}
+      {/* Topic Content */}
       <div className="math-topic-content" ref={(el) => { topicContentRef.current = el; }}>
         {/* Topic Header */}
         <div className="topic-header" style={{ borderColor: currentTopic.color }}>
@@ -608,7 +604,7 @@ export default function MathExplorer({ onComplete }) {
           </div>
         </div>
 
-        {/* ═══ LESSON MODE ═══ */}
+        {/* Lesson mode */}
         {mode === "lesson" && (
           <div className="topic-lesson">
             {/* Definition */}
@@ -686,7 +682,7 @@ export default function MathExplorer({ onComplete }) {
           </div>
         )}
 
-        {/* ═══ QUIZ MODE ═══ */}
+        {/* Quiz mode */}
         {mode === "quiz" && (
           <div className="topic-quiz">
             <Alert
@@ -763,7 +759,7 @@ export default function MathExplorer({ onComplete }) {
           </div>
         )}
 
-        {/* ═══ RESULT MODE ═══ */}
+        {/* Result mode */}
         {mode === "result" && (
           <div className="topic-result">
             <Result
@@ -819,7 +815,7 @@ export default function MathExplorer({ onComplete }) {
         )}
       </div>
 
-      {/* ═══ Bottom Navigation ═══ */}
+      {/* Bottom Navigation */}
       <div className="math-bottom-nav">
         <Button
           disabled={currentTopicIdx === 0}

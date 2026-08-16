@@ -23,7 +23,7 @@
   font-size: 0.85rem;
 }
 
-/* ─── Graph Selector ──────────────────────────────────────── */
+/* Graph Selector */
 .graph-selector {
   display: flex;
   justify-content: center;
@@ -53,7 +53,7 @@
   border-color: #6366f1;
 }
 
-/* ─── Controls ────────────────────────────────────────────── */
+/* Controls */
 .graph-controls {
   display: flex;
   align-items: center;
@@ -111,7 +111,7 @@
   margin-left: auto;
 }
 
-/* ─── Graph SVG Canvas ────────────────────────────────────── */
+/* Graph SVG Canvas */
 .graph-canvas-wrap {
   background: #0f172a;
   border: 1px solid #334155;
@@ -220,7 +220,7 @@
   pointer-events: none;
 }
 
-/* ─── Stats Cards ─────────────────────────────────────────── */
+/* Stats Cards */
 .opt-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -256,7 +256,7 @@
   color: #4ade80;
 }
 
-/* ─── Fusion Explanation ──────────────────────────────────── */
+/* Fusion Explanation */
 .fusion-explain {
   background: #1e293b;
   border: 1px solid #334155;

@@ -9,7 +9,7 @@
  * Output: 10 probabilities (digits 0-9)
  */
 
-// ─── Inference Engine ─────────────────────────────────────────────────
+// Inference Engine
 
 /**
  * Run full inference on a 28×28 grayscale image.
@@ -59,7 +59,7 @@ export function runMNISTInference(pixels) {
   return { logits, probs, prediction, confidence };
 }
 
-// ─── Layer Operations ─────────────────────────────────────────────────
+// Layer Operations
 
 function conv2d(input, w, h, inChannels, weights, bias, outChannels) {
   const outW = w - 2, outH = h - 2;
@@ -129,7 +129,7 @@ function fullyConnected(input, weights, bias, inSize, outSize) {
 }
 
 
-// ─── Pre-trained Weights ──────────────────────────────────────────────
+// Pre-trained Weights
 // Import real trained weights (98.5% accuracy on MNIST test set)
 import {
   CONV1_WEIGHTS, CONV1_BIAS,

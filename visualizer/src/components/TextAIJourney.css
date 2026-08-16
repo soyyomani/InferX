@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   Text AI Journey — Unified design (Visual + Learn + Code + Quiz)
-   ═══════════════════════════════════════════════════════════════════ */
+/* Text AI Journey */
 
 .textai-journey {
   max-width: 960px;
@@ -15,7 +13,7 @@
   letter-spacing: -0.5px;
 }
 
-/* ═══ Stage Navigation — Horizontal scrollable pills ═══ */
+/* Stage Navigation */
 .taj-stage-nav {
   display: flex;
   gap: 8px;
@@ -110,7 +108,7 @@
   }
 }
 
-/* ═══ Unified Stage Card ═══ */
+/* Stage Card */
 .taj-stage-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -131,7 +129,7 @@
   font-size: 20px;
 }
 
-/* ═══ Tab Content ═══ */
+/* Tab Content */
 .taj-tab-content {
   padding: 8px 0;
   min-height: 200px;
@@ -181,7 +179,7 @@
   font-size: 14px;
 }
 
-/* ═══ Bottom Navigation ═══ */
+/* Bottom Navigation */
 .taj-bottom-nav {
   display: flex;
   align-items: center;
@@ -190,7 +188,7 @@
   border-top: 1px solid var(--border);
 }
 
-/* ═══ Responsive ═══ */
+/* Responsive */
 @media (max-width: 768px) {
   .taj-stage-card .ant-card-head-title {
     font-size: 14px;

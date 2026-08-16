@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { runMNISTInference } from "../engine/mnist_model";
 import "./ImagePipeline.css";
 
-// ─── Utility ─────────────────────────────────────────────────────────
+// Utility
 
 // Convolution with a 3×3 kernel
 function applyKernel(pixels, w, h, kernel) {
@@ -81,7 +81,7 @@ const STAGES = [
   },
 ];
 
-// ─── Main Component ──────────────────────────────────────────────────
+// Main Component
 export default function ImagePipeline({ onComplete }) {
   const [pixels, setPixels] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -306,7 +306,7 @@ export default function ImagePipeline({ onComplete }) {
 }
 
 
-// ─── Stage 1: Pixels ─────────────────────────────────────────────────
+// Stage 1: Pixels
 function PixelStage({ pixels }) {
   const [hoverIdx, setHoverIdx] = useState(-1);
   const w = 28, h = 28;
@@ -367,7 +367,7 @@ function PixelStage({ pixels }) {
   );
 }
 
-// ─── Stage 2: Convolution ────────────────────────────────────────────
+// Stage 2: Convolution
 function ConvStage({ pixels, data }) {
   const [selectedPos, setSelectedPos] = useState(null);
   const w = 28, cw = data.convW;
@@ -474,7 +474,7 @@ function ConvStage({ pixels, data }) {
 }
 
 
-// ─── Stage 3: ReLU ───────────────────────────────────────────────────
+// Stage 3: ReLU
 function ReluStage({ data }) {
   const cw = data.convW;
   const negCount = data.convRaw.filter(v => v < 0).length;
@@ -531,7 +531,7 @@ function ReluStage({ data }) {
   );
 }
 
-// ─── Stage 4: Pooling ────────────────────────────────────────────────
+// Stage 4: Pooling
 function PoolStage({ data }) {
   const { pooled, convW, reluOut } = data;
   const [selectedBlock, setSelectedBlock] = useState(null);
@@ -595,7 +595,7 @@ function PoolStage({ data }) {
 }
 
 
-// ─── Stage 5: Flatten + FC ───────────────────────────────────────────
+// Stage 5: Flatten + FC
 function FCStage({ data }) {
   const { pooled, flatSize } = data;
   return (
@@ -654,7 +654,7 @@ function FCStage({ data }) {
   );
 }
 
-// ─── Stage 6: Softmax ────────────────────────────────────────────────
+// Stage 6: Softmax
 function SoftmaxStage({ data }) {
   const { logits, probs, winner } = data;
   const maxLogit = Math.max(...logits);
@@ -704,7 +704,7 @@ function SoftmaxStage({ data }) {
   );
 }
 
-// ─── Helper Components ───────────────────────────────────────────────
+// Helper Components
 function MiniPixelGrid({ pixels, size, cellSize }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: `repeat(${size}, ${cellSize}px)`, gap: 0 }}>

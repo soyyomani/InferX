@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { runMNISTInference } from "../engine/mnist_model";
 import "./MNISTLive.css";
 
-// ─── Main Component ──────────────────────────────────────────────────
+// Main Component
 export default function MNISTLive({ onComplete }) {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -199,7 +199,7 @@ export default function MNISTLive({ onComplete }) {
                 </div>
               </div>
 
-              {/* ═══ ZOOM: What happens inside ONE neuron ═══ */}
+              {/* Neuron zoom */}
               <NeuronZoom pixels={pixels28} prediction={prediction} />
             </div>
           )}
@@ -209,7 +209,7 @@ export default function MNISTLive({ onComplete }) {
   );
 }
 
-// ─── Neural Network SVG Diagram ──────────────────────────────────────
+// Neural Network SVG Diagram
 function NeuralNetworkDiagram({ pixels, prediction, pipelineData }) {
   // Layout: 3 columns of circles (input, hidden, output)
   // Show subset of neurons (16 input, 12 hidden, 10 output) for clarity
@@ -335,7 +335,7 @@ function NeuralNetworkDiagram({ pixels, prediction, pipelineData }) {
   );
 }
 
-// ─── Neuron Zoom: shows what happens INSIDE one neuron ───────────────
+// NeuronZoom: shows what happens inside one neuron
 function NeuronZoom({ pixels, prediction }) {
   if (!pixels || !prediction) return null;
 
@@ -467,7 +467,7 @@ function NeuronZoom({ pixels, prediction }) {
   );
 }
 
-// ─── Compute pipeline data for visualization ─────────────────────────
+// Compute pipeline data for visualization
 function computePipelineExplanation(pixels, result) {
   const hidden_raw = new Array(20);
   for (let i = 0; i < 20; i++) {

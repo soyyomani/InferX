@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   RAG Pipeline — Styles
-   ═══════════════════════════════════════════════════════════════════ */
+/* RAG Pipeline */
 
 .rag-pipeline {
   max-width: 960px;
@@ -19,7 +17,7 @@
   margin-top: 16px;
 }
 
-/* ═══ Learn Mode ═══ */
+/* Learn Mode */
 .rag-learn {
   animation: fadeIn 0.3s ease-out;
 }
@@ -230,7 +228,7 @@
   background: var(--bg-secondary);
 }
 
-/* ═══ Experiment Mode ═══ */
+/* Experiment Mode */
 .rag-experiment {
   animation: fadeIn 0.3s ease-out;
 }
@@ -361,7 +359,7 @@
   border-radius: var(--radius-sm);
 }
 
-/* ═══ Quiz Mode (shared with LLMExplorer) ═══ */
+/* Quiz Mode */
 .rag-quiz,
 .rag-result {
   animation: fadeIn 0.3s ease-out;
@@ -415,7 +413,7 @@
   margin-top: 24px;
 }
 
-/* ═══ Responsive ═══ */
+/* Responsive */
 @media (max-width: 768px) {
   .sim-row {
     flex-direction: column;

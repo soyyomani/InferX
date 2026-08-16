@@ -21,9 +21,7 @@ import "./RAGPipeline.css";
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
-// ═══════════════════════════════════════════════════════════════════
-// LESSON DATA
-// ═══════════════════════════════════════════════════════════════════
+// Lesson data
 
 const LESSON_SECTIONS = [
   {
@@ -77,9 +75,7 @@ const LESSON_SECTIONS = [
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// QUIZ DATA
-// ═══════════════════════════════════════════════════════════════════
+// Quiz data
 
 const QUIZ = [
   {
@@ -139,9 +135,7 @@ const QUIZ = [
   },
 ];
 
-// ═══════════════════════════════════════════════════════════════════
-// INTERACTIVE EXPERIMENT: Mini RAG system
-// ═══════════════════════════════════════════════════════════════════
+// Mini RAG system experiment
 
 // Mini knowledge base (simulated vector DB)
 const KNOWLEDGE_BASE = [
@@ -206,9 +200,7 @@ function generateAnswer(query, docs) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════════
+// Main component
 
 export default function RAGPipeline({ onComplete }) {
   const [mode, setMode] = useState("learn"); // "learn" | "experiment" | "quiz" | "result"
@@ -230,7 +222,7 @@ export default function RAGPipeline({ onComplete }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [mode]);
 
-  // ─── Experiment Functions ─────────────────────────────────────
+  // --- Experiment functions
   function runRAG() {
     if (!query.trim()) return;
 
@@ -279,7 +271,7 @@ export default function RAGPipeline({ onComplete }) {
     setGeneratedAnswer("");
   }
 
-  // ─── Quiz Functions ───────────────────────────────────────────
+  // --- Quiz functions
   function submitQuiz() {
     setQuizSubmitted(true);
     const correct = QUIZ.filter((q, i) => quizAnswers[i] === q.correct).length;
@@ -303,9 +295,7 @@ export default function RAGPipeline({ onComplete }) {
 
   const passed = quizScore >= 3;
 
-  // ═══════════════════════════════════════════════════════════════
-  // RENDER
-  // ═══════════════════════════════════════════════════════════════
+  // Render
 
   return (
     <div className="rag-pipeline animate-in">
@@ -331,7 +321,7 @@ export default function RAGPipeline({ onComplete }) {
         </Space>
       </div>
 
-      {/* ═══ LEARN MODE ═══ */}
+      {/* Learn mode */}
       {mode === "learn" && (
         <div className="rag-learn">
           <div className="lesson-nav">
@@ -475,7 +465,7 @@ export default function RAGPipeline({ onComplete }) {
         </div>
       )}
 
-      {/* ═══ EXPERIMENT MODE ═══ */}
+      {/* Experiment mode */}
       {mode === "experiment" && (
         <div className="rag-experiment">
           <Alert
@@ -638,7 +628,7 @@ export default function RAGPipeline({ onComplete }) {
         </div>
       )}
 
-      {/* ═══ QUIZ MODE ═══ */}
+      {/* Quiz mode */}
       {mode === "quiz" && (
         <div className="rag-quiz">
           <Alert
@@ -713,7 +703,7 @@ export default function RAGPipeline({ onComplete }) {
         </div>
       )}
 
-      {/* ═══ RESULT MODE ═══ */}
+      {/* Result mode */}
       {mode === "result" && (
         <div className="rag-result">
           <Result

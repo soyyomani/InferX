@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   Site Footer — Personal & Project Info
-   ═══════════════════════════════════════════════════════════════════ */
+/* Site Footer */
 
 .site-footer {
   margin-top: 48px;
@@ -111,7 +109,7 @@
   color: var(--text-muted);
 }
 
-/* ═══ Responsive ═══ */
+/* Responsive */
 @media (max-width: 900px) {
   .footer-inner {
     grid-template-columns: 1fr 1fr;

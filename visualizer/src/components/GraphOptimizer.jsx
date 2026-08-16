@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import "./GraphOptimizer.css";
 
-// ─── Graph Definitions ───────────────────────────────────────────────
+// Graph Definitions
 
 const EXAMPLE_GRAPHS = {
   mlp: {
@@ -52,7 +52,7 @@ const EXAMPLE_GRAPHS = {
   },
 };
 
-// ─── Optimizer Logic (mirrors C++ optimizer.h) ───────────────────────
+// Optimizer Logic (mirrors C++ optimizer.h)
 
 function applyFusion(nodes, edges) {
   const fusedNodes = [...nodes];
@@ -132,7 +132,7 @@ function applyDeadNodeElimination(nodes, edges) {
   return dead.map(n => n.id);
 }
 
-// ─── Main Component ──────────────────────────────────────────────────
+// Main Component
 export default function GraphOptimizer() {
   const [selectedGraph, setSelectedGraph] = useState("mlp");
   const [optimized, setOptimized] = useState(false);

@@ -1,4 +1,4 @@
-/* ═══ Shared Visualization Styles ═══ */
+/* Shared Visualization Styles */
 
 .viz-container {
   background: var(--bg-card);
@@ -38,7 +38,7 @@
 }
 .viz-annotation strong { color: var(--accent); }
 
-/* ═══ Attention Heatmap ═══ */
+/* Attention Heatmap */
 .heatmap-wrapper { overflow-x: auto; }
 .heatmap-col-labels {
   display: grid;
@@ -84,7 +84,7 @@
   transform: scale(1.1);
 }
 
-/* ═══ MatMul Animation ═══ */
+/* MatMul Animation */
 .matmul-layout {
   display: flex;
   align-items: center;
@@ -170,7 +170,7 @@
   margin-left: 6px;
 }
 
-/* ═══ Softmax Chart ═══ */
+/* Softmax Chart */
 .softmax-stages {
   display: flex;
   gap: 6px;
@@ -240,7 +240,7 @@
   font-family: var(--font-mono);
 }
 
-/* ═══ Activation Plot (SVG) ═══ */
+/* Activation Plot */
 .activation-svg {
   width: 100%;
   max-width: 420px;

@@ -1,10 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════════
-   Text Pipeline — Full Visual Experience
-   ═══════════════════════════════════════════════════════════════════ */
+/* Text Pipeline */
 
 .tp { max-width: 1000px; margin: 0 auto; }
 
-/* ─── Header ─── */
+/* Header */
 .tp-header { text-align: center; margin-bottom: 32px; }
 .tp-header h1 {
   font-size: clamp(1.5rem, 4vw, 2.2rem);
@@ -15,7 +13,7 @@
 .tp-icon { margin-right: 10px; }
 .tp-header p { color: var(--text-secondary); font-size: 1rem; }
 
-/* ─── Input ─── */
+/* Input */
 .tp-input-area { margin-bottom: 28px; }
 .tp-input-wrap { display: flex; gap: 10px; margin-bottom: 10px; }
 .tp-input {
@@ -56,7 +54,7 @@
 }
 .tp-suggestions button:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ─── Stage Navigator ─── */
+/* Stage Navigator */
 .tp-stages {
   display: flex;
   gap: 4px;
@@ -100,7 +98,7 @@
 }
 .tp-stage-btn.active .tp-stage-num { background: var(--accent); color: white; }
 
-/* ─── Panels ─── */
+/* Panels */
 .tp-panel {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -133,7 +131,7 @@
   margin-bottom: 24px;
 }
 
-/* ─── Sections ─── */
+/* Sections */
 .tp-section { margin-bottom: 24px; }
 .tp-label {
   font-size: 0.78rem;
@@ -144,7 +142,7 @@
   margin-bottom: 10px;
 }
 
-/* ─── Tokenization ─── */
+/* Tokenization */
 .tp-raw-text {
   font-family: var(--font-mono);
   font-size: 1.1rem;
@@ -208,7 +206,7 @@
   color: var(--text-muted);
 }
 
-/* ─── Embedding ─── */
+/* Embedding */
 .tp-embed-table { display: flex; flex-direction: column; gap: 6px; }
 .tp-embed-header {
   display: flex;
@@ -240,7 +238,7 @@
 }
 .tp-embed-bar:hover { transform: scaleY(1.4); }
 
-/* ─── Positional ─── */
+/* Positional */
 .tp-pos-visual { display: flex; flex-direction: column; gap: 6px; }
 .tp-pos-row {
   display: flex;
@@ -340,7 +338,7 @@
 .tp-hm-cell:hover { transform: scale(1.15); z-index: 2; }
 .tp-hm-cell.row-active { box-shadow: 0 0 6px rgba(74, 144, 226, 0.5); }
 
-/* ─── FFN ─── */
+/* FFN */
 .tp-ffn-visual {
   display: flex;
   align-items: center;
@@ -404,7 +402,7 @@
 }
 .tp-layer-dots { font-size: 0.8rem; color: var(--text-muted); margin-left: 8px; }
 
-/* ─── Output ─── */
+/* Output */
 .tp-output-flow {
   display: flex;
   align-items: center;
@@ -478,7 +476,7 @@
   color: var(--text-muted);
 }
 
-/* ─── Shared ─── */
+/* Shared */
 .tp-math-box {
   margin-top: 20px;
   padding: 16px;
@@ -511,7 +509,7 @@
 }
 .tp-insight strong { color: var(--warning); }
 
-/* ─── Empty State ─── */
+/* Empty State */
 .tp-empty-state {
   text-align: center;
   padding: 60px 24px;

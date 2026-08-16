@@ -1,6 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   InferX Design System — Ant Design Dark Theme Overrides
-   ═══════════════════════════════════════════════════════════════════ */
+/* App.css — Ant Design Dark Theme Overrides */
 
 :root {
   /* Colors (kept for child component CSS that still references them) */
@@ -58,7 +56,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ═══ Ant Design Layout Overrides ═══ */
+/* Ant Design Layout Overrides */
 .app-layout {
   min-height: 100vh;
   background: var(--bg-primary);
@@ -108,14 +106,14 @@ body {
   flex-shrink: 0;
 }
 
-/* ═══ Breadcrumb ═══ */
+/* Breadcrumb */
 .app-breadcrumb {
   padding: 10px 24px;
   border-bottom: 1px solid var(--border);
   background: rgba(10, 14, 23, 0.5);
 }
 
-/* ═══ Main Content ═══ */
+/* Main Content */
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -123,14 +121,14 @@ body {
   min-height: calc(100vh - 130px);
 }
 
-/* ═══ Responsive: Tablet ═══ */
+/* Responsive: Tablet */
 @media (max-width: 1024px) {
   .main-content {
     padding: 24px 20px;
   }
 }
 
-/* ═══ Responsive: Mobile ═══ */
+/* Responsive: Mobile */
 @media (max-width: 768px) {
   .app-header {
     padding: 0 12px;
@@ -166,7 +164,7 @@ body {
   }
 }
 
-/* ═══ Responsive: Small Mobile ═══ */
+/* Responsive: Small Mobile */
 @media (max-width: 480px) {
   .app-header {
     padding: 0 8px;
@@ -185,7 +183,7 @@ body {
   }
 }
 
-/* ═══ Page Layout System ═══ */
+/* Page Layout System */
 .page {
   max-width: 960px;
   margin: 0 auto;
@@ -273,7 +271,7 @@ body {
   margin-top: 2px;
 }
 
-/* ═══ Shared Components ═══ */
+/* Shared Components */
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -360,7 +358,7 @@ body {
 .badge-success { background: rgba(52, 211, 153, 0.15); color: var(--success); }
 .badge-purple { background: rgba(167, 139, 250, 0.15); color: var(--purple); }
 
-/* ═══ Demo Banner ═══ */
+/* Demo Banner */
 .demo-banner {
   display: flex;
   align-items: flex-start;
@@ -383,7 +381,7 @@ body {
   opacity: 0.85;
 }
 
-/* ═══ Animations ═══ */
+/* Animations */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -407,14 +405,14 @@ body {
 .nav-icon svg { vertical-align: middle; }
 .tp-icon-svg, .vp-icon { vertical-align: middle; margin-right: 8px; color: var(--accent); }
 
-/* ═══ Scrollbar ═══ */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
 ::selection { background: rgba(74, 144, 226, 0.3); color: white; }
 
-/* ═══ Footer ═══ */
+/* Footer */
 .app-footer {
   text-align: center;
   padding: 24px;
